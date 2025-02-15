@@ -1,0 +1,25 @@
+# Proxy内网穿透
+
+#### 介绍
+我们采用的是数据转发实现 稳定性可靠性是有保证的即便是极端的环境只要能上网就能实现穿透。
+我们支持TCP和UDP协议，针对 http/https ws/wss 协议做了大量的优化工作可以更加灵活的控制。让用户使用更佳舒服简单。
+
+### 原理图
+
+<img src="https://gitee.com/byusi/proxy/raw/master/doc/img_1.png" width="500" />
+
+
+## 云后台管理web
+
+<img src="https://gitee.com/byusi/proxy/raw/master/doc/img_3.png" width="500" />
+
+
+
+### 安卓客服端
+<img src="https://gitee.com/byusi/proxy/raw/master/doc/d.jpg" width="500" />
+<img src="https://gitee.com/byusi/proxy/raw/master/doc/e.jpg" width="500" />
+<img src="https://gitee.com/byusi/proxy/raw/master/doc/f.jpg" width="500" />
+
+### Golang客服端
+为了跨平台我们提供golang的实现
+<img src="https://gitee.com/byusi/proxy/raw/master/doc/c.png" width="500" />
