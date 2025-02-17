@@ -17,7 +17,7 @@ public class TestHpClient {
                 }
             });
 
-            client.connect(HpMessageData.HpMessage.MessageType.UDP, "hp.nsjiasu.com", 9091, "666666", "666666", "asdx", -1, "127.0.0.1", 7777);
+            client.connect(HpMessageData.HpMessage.MessageType.UDP, "proxy.byusi.cn", 9091, "666666", "666666", "asdx", -1, "127.0.0.1", 7777);
             Thread.sleep(2000);
 
             while (true){
