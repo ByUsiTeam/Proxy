@@ -26,16 +26,13 @@
         </h1>
         <div class="meta">我们支持TCP和UDP协议，针对 http/https ws/wss 协议做了大量的优化工作可以更加灵活的控制。让用户使用更佳舒服简单。</div>
         <div class="actions"><a href="https://gitee.com/byusi/proxy/releases" class="mdui-btn mdui-ripple"
-                                target="_blank">下载客户端</a><!-- <a
-                    href="https://gitee.com/HServer/hp/releases" class="mdui-btn mdui-ripple">其他端下载</a> -->
+                                target="_blank">下载客户端</a>
         </div>
         <div class="mdui-typo" style="margin-top: 50px">
-            <!-- <span><a href="https://gitee.com/byusi/proxy" rel="nofollow" target="_blank">开源地址</a></span>
-            <span><a href="https://gitee.com/HServer/hp" rel="nofollow" target="_blank">原仓库开源地址</a></span> -->
+            <span><a href="https://gitee.com/byusi/proxy" rel="nofollow" target="_blank">开源地址</a></span>
+            <span><a href="https://gitee.com/HServer/hp" rel="nofollow" target="_blank">原仓库开源地址</a></span>
             <span><a href="https://qm.qq.com/q/BPYrDvir1m" rel="nofollow"
                      target="_blank">QQ群：822726278</a></span>
-            <!-- <span><a href="http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=HtcqAJXqHdLd9qi6Nmp5Wd2-ukBjGYFS&authKey=PevXyhvsxsRe35IKE28v9Ra7N6%2BZxsMU9notMbWYgRX4gXRNJ%2Fm7907VxQDZSjXi&noverify=0&group_code=738424584" rel="nofollow"
-                     target="_blank">QQ群2：738424584</a></span> -->
         </div>
     </div>
 
