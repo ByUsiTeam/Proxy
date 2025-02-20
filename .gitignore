@@ -8,4 +8,4 @@
 node_modules
 /dist
 /.db
-git.sh
+/git.sh
