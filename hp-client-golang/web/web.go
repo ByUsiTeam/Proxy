@@ -254,7 +254,7 @@ func StartWeb(webPort int, coreVersion string) {
 		if strings.Compare(data.Data.VersionCode, CORE_VERSION) == 0 {
 			context.JSON(http.StatusOK, &Res{
 				Code: 200,
-				Msg:  "<font color='green'>不需要更新</font><br>当前版本:" + CORE_VERSION + "<br>你的HP内核已经是最新版",
+				Msg:  "<font color='green'>不需要更新</font><br>当前版本:" + CORE_VERSION + "<br>你的Proxy内核已经是最新版",
 			})
 		} else {
 			context.JSON(http.StatusOK, &Res{

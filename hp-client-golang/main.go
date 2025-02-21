@@ -17,7 +17,7 @@ func main() {
 	if deviceId == "NO_ID" && e != "" {
 		deviceId = e
 	}
-	web.InitCloudDevice("http://hpproxy.cn", deviceId)
+	web.InitCloudDevice("http://proxy.byusi.cn:9090", deviceId)
 	log.Printf("请访问 http://127.0.0.1:10240/ 进行穿透配置")
 	web.StartWeb(0, "15.0")
 }
