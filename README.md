@@ -12,6 +12,11 @@
   curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh > install.sh && bash install.sh
   ```
 
+## **Termux**和**Linux**快速解除部署脚本
+  ```bash
+  curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/uninstall.sh > uninstall.sh && bash uninstall.sh
+  ```
+
 ### 原理图
 
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/img_1.png" width="500" />
