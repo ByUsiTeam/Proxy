@@ -7,6 +7,11 @@
 我们采用的是数据转发实现 稳定性可靠性是有保证的即便是极端的环境只要能上网就能实现穿透。
 我们支持TCP和UDP协议，针对 http/https ws/wss 协议做了大量的优化工作可以更加灵活的控制。让用户使用更佳舒服简单。
 
+### **Termux**和**Linux**快速部署脚本
+  ```bash
+  curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh | bash
+  ```
+
 ### 原理图
 
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/img_1.png" width="500" />
