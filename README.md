@@ -9,7 +9,7 @@
 
 ### **Termux**和**Linux**快速部署脚本
   ```bash
-  curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh | bash
+  curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh > install.sh && bash install.sh
   ```
 
 ### 原理图
