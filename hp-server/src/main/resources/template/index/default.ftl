@@ -143,8 +143,10 @@ curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh > install.sh
         <div class="meta">
             <div style="text-align: center">
                 <img height="300" src="/img/pay.jpg"/>
+                <img height="300" src="/img/secretary.jpg"/>
             </div>
         </div>
+        <h2>不推荐扫描第二个（因为加第二个是纯属朋友要求）</h2>
         <div class="mdui-clearfix">
             <div class="meta">
                 <div class="mdui-row-xs-4">
