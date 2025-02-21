@@ -12,7 +12,7 @@ RESET='\033[0m'
 # 显示菜单
 show_menu() {
     clear
-    echo -e "${BOLD}${BLUE}=== Proxy穿透安装 ===${RESET}"
+    echo -e "${BOLD}${BLUE}==== Proxy穿透安装 ====${RESET}"
     echo -e "1) Linux 安装"
     echo -e "2) Termux 安装"
     echo -e "3) 退出"
