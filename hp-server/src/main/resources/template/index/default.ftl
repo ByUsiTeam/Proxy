@@ -34,8 +34,9 @@
 
         <div class="mdui-typo" style="margin-top: 50px">
             <span><a href="https://gitee.com/HServer/hp" rel="nofollow" target="_blank">原仓库开源地址</a></span>
-            <span><a href="https://qm.qq.com/q/BPYrDvir1m" rel="nofollow"
-                     target="_blank">QQ群：822726278</a></span>
+            <!-- <span><a href="https://qm.qq.com/q/BPYrDvir1m" rel="nofollow"
+                     target="_blank">QQ群：822726278</a></span> -->
+            <span><a href="mqqapi://card/show_pslcard?src_type=internal&version=1&uin=822726278&card_type=group&source=qrcode" rel="nofollow" target="_blank">QQ群：822726278</a></span>
         </div>
     </div>
 
