@@ -40,6 +40,19 @@
         </div>
     </div>
 
+    <div class="feature">
+        <script src='https://gitee.com/byusi/proxy/widget_preview' async defer></script>
+        <div id="osc-gitee-widget-tag"></div>
+        <style>
+            .osc_pro_color {color: #4183c4 !important;}
+            .osc_panel_color {background-color: #ffffff !important;}
+            .osc_background_color {background-color: #ffffff !important;}
+            .osc_border_color {border-color: #e3e9ed !important;}
+            .osc_desc_color {color: #666666 !important;}
+            .osc_link_color * {color: #9b9b9b !important;}
+        </style>
+    </div>
+
     <div class="feature case">
         <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <path d="M870.56478157 1012.78372471H132.34317294c-63.27613764 0-116.00625254-56.94852472-116.00625373-128.66148079v-4.21840981L159.76283256 126.91779293c0-69.60375176 52.7301149-126.55227529 116.00625254-126.55227528h451.36978432c63.27613764 0 116.00625254 56.94852472 116.00625254 126.55227528l143.42591215 757.20445099c0 71.71295608-52.7301149 128.66148079-116.00625254 128.66148079zM58.52101137 886.23144824c0 46.40250079 33.74727373 84.36818432 73.82216157 84.36818431h738.22160863c40.07488785 0 73.82216038-37.96568234 73.82216038-84.36818431l-143.42591214-757.20445099c0-48.51170629-33.74727373-86.47738863-73.82216039-86.47738863H275.7690851c-40.07488785 0-73.82216038 37.96568234-73.82216038 86.47738863v4.21840981L58.52101137 886.23144824z"></path>
