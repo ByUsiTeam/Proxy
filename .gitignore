@@ -10,3 +10,4 @@ node_modules
 /.db
 /git.sh
 target
+*.bak
