@@ -23,7 +23,6 @@
     </properties>
 
     <modules>
-        <module>hp-client</module>
         <module>hp-common</module>
         <module>hp-server</module>
         <module>hp-proxy</module>
