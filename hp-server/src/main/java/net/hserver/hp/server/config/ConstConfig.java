@@ -11,7 +11,7 @@ public class ConstConfig {
     //注册模式：-1免费关闭注册 0 免费注册 >0 每天24小时时间内注册(小时数)
     public static int TIME = 0;
     public static int PROXY_SIZE = Integer.parseInt(PropUtil.getInstance().get("proxy.size", "3"));
-    public static String TIPS = "禁止穿透违法程序，免费不易 请大家谅解\nByUsi开放改编";
+    public static String TIPS = "禁止穿透违法程序，免费不易 请大家谅解，ByUsi改编发行";
     public static String REG_TOKEN = UUID.randomUUID().toString();
     /**
      * 通用注册码

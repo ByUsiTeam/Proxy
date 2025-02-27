@@ -12,6 +12,7 @@
     <script src="/admin/js/jquery.min.js"></script>
     <script src="/admin/js/paging.js"></script>
     <script src="/admin/js/mdui.min.js"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <title>Proxy内网穿透</title>
 </head>
 <body class="mdui-appbar-with-toolbar mdui-theme-primary-indigo mdui-theme-accent-pink mdui-theme-layout-auto">
