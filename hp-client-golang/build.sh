@@ -60,3 +60,5 @@ export CGO_ENABLED=0
 export GOOS=android
 export GOARCH=arm64
 go build -o build/proxy-client-android main.go
+echo "编译成功"
+echo "编译完成✅"
