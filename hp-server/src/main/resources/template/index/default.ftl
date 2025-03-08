@@ -1,5 +1,51 @@
 <#include "./header.ftl">
 <style>
+    .cyber-logo {
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.3));
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+
+    /* 调整banner布局 */
+    .banner {
+        position: relative;
+        padding-top: 4rem;
+        text-align: center;
+    }
+
+    .banner h1 {
+        /* 隐藏文字标题（SEO保留） */
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+
+    .meta {
+        font-size: 1.1rem;
+        max-width: 800px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .actions {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
     .mdui-col span {
         display: inline-block;
         padding: 0.25em 0.4em;
@@ -20,23 +66,98 @@
         text-align: center;
     }
 </style>
+
 <#--监控页面-->
 <div id="page-index" class="mdui-container">
-    <div class="banner"><h1><strong>Proxy</strong>内网穿透
-        </h1>
+    <div class="banner">
+        <!-- 新增动态SVG Logo -->
+        <div class="cyber-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+                <defs>
+                    <linearGradient id="proxyGradient" x1="50%" y1="0%" x2="50%" y2="100%">
+                        <stop offset="0%" stop-color="#7dd3fc"/>
+                        <stop offset="100%" stop-color="#38bdf8"/>
+                    </linearGradient>
+                    <filter id="cyberGlow" width="160%" height="160%">
+                        <feGaussianBlur stdDeviation="3" result="glow"/>
+                        <feColorMatrix values="0 0 0 0 0.4 0 0 0 0 0.6 0 0 0 0 0.9 0 0 0 0.7 0"/>
+                        <feMerge>
+                            <feMergeNode in="glow"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <pattern id="linkPattern" width="40" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M0 10 L20 10" stroke="#7dd3fc" stroke-width="2" stroke-dasharray="4 4"/>
+                    </pattern>
+                    <symbol id="chainLink">
+                        <rect x="-6" y="-3" width="12" height="6" rx="2" fill="url(#proxyGradient)">
+                            <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+                        </rect>
+                    </symbol>
+                </defs>
+
+                <!-- 背景链环动画 -->
+                <g transform="translate(256 256)" opacity="0.3">
+                    <use xlink:href="#chainLink" transform="rotate(0) translate(140 0)"/>
+                    <use xlink:href="#chainLink" transform="rotate(45) translate(140 0)"/>
+                    <use xlink:href="#chainLink" transform="rotate(90) translate(140 0)"/>
+                    <use xlink:href="#chainLink" transform="rotate(135) translate(140 0)"/>
+                    <animateTransform attributeName="transform"
+                                      type="rotate"
+                                      from="0 256 256" to="360 256 256"
+                                      dur="40s"
+                                      repeatCount="indefinite"/>
+                </g>
+
+                <!-- 核心图形 -->
+                <g transform="translate(256 256)">
+                    <path d="M-120 0a120 120 0 0 1 240 0" 
+                          fill="none"
+                          stroke="url(#proxyGradient)"
+                          stroke-width="14"
+                          stroke-linecap="round"
+                          filter="url(#cyberGlow)"
+                          opacity="0.9">
+                        <animate attributeName="stroke-dashoffset" 
+                                 values="0;240" 
+                                 dur="3s" 
+                                 repeatCount="indefinite"/>
+                    </path>
+                    <path d="M-60 0L40 0M30-10L40 0 30 10" 
+                          stroke="#38bdf8" 
+                          stroke-width="4"
+                          filter="url(#cyberGlow)">
+                        <animateMotion 
+                            path="M160 0L-160 0" 
+                            dur="2.8s" 
+                            repeatCount="indefinite"/>
+                    </path>
+                    <circle r="24" fill="url(#proxyGradient)" filter="url(#cyberGlow)">
+                        <animate attributeName="r" values="24;28;24" dur="3s" repeatCount="indefinite"/>
+                    </circle>
+                </g>
+
+                <!-- 文字标识 -->
+                <text x="256" y="420" 
+                      text-anchor="middle"
+                      font-family="Arial" 
+                      font-size="42"
+                      fill="#38bdf8">
+                    <tspan fill="#7dd3fc">Proxy</tspan>穿透
+                </text>
+            </svg>
+            <div class="meta">我们支持TCP和UDP协议，针对 http/https ws/wss 协议做了大量的优化工作可以更加灵活的控制。让用户使用更佳舒服简单。</div>
+        </div>
+
+        <!-- 隐藏的原标题（SEO保留） -->
+        <h1><strong>Proxy</strong>内网穿透</h1>
+        
         <div class="meta">我们支持TCP和UDP协议，针对 http/https ws/wss 协议做了大量的优化工作可以更加灵活的控制。让用户使用更佳舒服简单。</div>
         <div class="actions"><a href="https://gitee.com/byusi/proxy/releases" class="mdui-btn mdui-ripple"
                                 target="_blank">下载客户端</a>
         </div>
         <div class="actions">
             <span><a href="https://gitee.com/byusi/proxy" class="mdui-btn mdui-ripple" target="_blank">开源地址</a></span>
-        </div>
-
-        <div class="mdui-typo" style="margin-top: 50px">
-            <span><a href="https://gitee.com/HServer/hp" rel="nofollow" target="_blank">原仓库开源地址</a></span>
-            <!-- <span><a href="https://qm.qq.com/q/BPYrDvir1m" rel="nofollow"
-                     target="_blank">QQ群：822726278</a></span> -->
-            <span><a href="mqqapi://card/show_pslcard?src_type=internal&version=1&uin=822726278&card_type=group&source=qrcode" rel="nofollow" target="_blank">QQ群：822726278</a></span>
         </div>
     </div>
 
@@ -125,20 +246,6 @@
         </div>
     </div>
 
-    <!-- <div class="feature">
-        <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <path d="M585.36391111 50.39445333a156.44444445 156.44444445 0 0 0-145.59004444 0L111.82876445 222.78826667a99.55555555 99.55555555 0 0 0-53.23207112 88.12088888v403.00657778a99.55555555 99.55555555 0 0 0 53.23207112 88.12088889l327.94737777 172.39608889a156.44444445 156.44444445 0 0 0 145.58776889 0l327.94737778-172.39608889a99.55555555 99.55555555 0 0 0 53.23207111-88.12088889V310.91029333a99.55555555 99.55555555 0 0 0-53.23207111-88.12088888L585.36391111 50.39217778z m13.23463111-25.17788444l327.94737778 172.39495111c42.0864 22.12295111 68.44074667 65.75217778 68.44074667 113.29991111v403.00544c0 47.54773333-26.35548445 91.17582222-68.44074667 113.29991111L598.59854222 999.61059555a184.88888889 184.88888889 0 0 1-172.05930667 0L98.59185778 827.21678222c-42.0864-22.12408889-68.44074667-65.75217778-68.44074667-113.29991111V310.91029333c0-47.54659555 26.35548445-91.17582222 68.44074667-113.29991111L426.53923555 25.21770667a184.88888889 184.88888889 0 0 1 172.05930667 0z"></path>
-            <path d="M336.50574222 410.05852445l99.46453333-165.79697778c25.37699555-42.29802667 80.23950222-56.01735111 122.53866667-30.64035556a89.31555555 89.31555555 0 0 1 30.64149333 30.64035556l100.34062223 167.25333333A48.47957333 48.47957333 0 0 1 700.87111111 410.16888889c26.70592 0 48.35555555 21.64963555 48.35555556 48.35555556 0 12.34602667-4.62734222 23.61230222-12.24248889 32.1581511l94.43669333 157.41383112c25.37699555 42.29916445 11.65767111 97.16167111-30.64035556 122.53866666a89.31555555 89.31555555 0 0 1-45.94915555 12.72490667H560.50574222c-6.07345778 19.76547555-24.4736 34.13333333-46.23018667 34.13333333-21.75658667 0-40.15672889-14.36785778-46.23018666-34.13333333H270.29048889c-49.32721778 0-89.31555555-39.98833778-89.31555556-89.31555555a89.31555555 89.31555555 0 0 1 12.72604445-45.94801778l95.77813333-159.65070222A48.16099555 48.16099555 0 0 1 278.18666667 457.38666667c0-26.70592 21.64963555-48.35555555 48.35555555-48.35555556 3.41560889 0 6.74816 0.35384889 9.96352 1.02741334z m328.53447111 15.99374222L564.75875555 258.89564445a60.87111111 60.87111111 0 0 0-20.88277333-20.88277334c-28.82787555-17.29422222-66.21866667-7.94510222-83.51288889 20.88277334L361.39235555 423.86545778c8.36266667 8.69262222 13.50428445 20.50616889 13.50428445 33.52120889 0 5.25312-0.83740445 10.30940445-2.38592 15.04483555l81.62190222 47.12448C467.50151111 501.51082667 488.95431111 489.81333333 513.13777778 489.81333333c24.74780445 0 46.63523555 12.25045333 59.92789333 31.01809778l81.84035556-47.25077333A48.31459555 48.31459555 0 0 1 652.51555555 458.52444445c0-12.49848889 4.74225778-23.88992 12.52465778-32.47217778zM560.50574222 754.91555555h194.32561778a60.87111111 60.87111111 0 0 0 31.31505778-8.67328c28.82787555-17.29422222 38.17813333-54.68501333 20.88277333-83.51288888l-94.36728889-157.29777778A48.45795555 48.45795555 0 0 1 700.87111111 506.88a48.14506667 48.14506667 0 0 1-29.44227556-9.99424l-86.71004444 50.06222222A73.63128889 73.63128889 0 0 1 586.52444445 563.2c0 35.46453333-25.15512889 65.05244445-58.59555556 71.89617778v87.64074667c15.53749333 4.56476445 27.82663111 16.72078222 32.57685333 32.1786311zM313.36334222 503.92519111l-95.27068444 158.80419556A60.87111111 60.87111111 0 0 0 209.41937778 694.04444445c0 33.61792 27.25319111 60.87111111 60.87111111 60.8711111h197.75488c4.63303111-15.07783111 16.44088889-27.01539555 31.43907556-31.82933333v-87.76817777c-34.00590222-6.39772445-59.73333333-36.25301333-59.73333334-72.11804445a73.54595555 73.54595555 0 0 1 2.18453334-17.84263111l-85.94090667-49.61735111A48.14506667 48.14506667 0 0 1 326.54222222 505.74222222c-4.56817778 0-8.98844445-0.63374222-13.17888-1.81703111zM513.13777778 608.14222222c24.82062222 0 44.94222222-20.1216 44.94222222-44.94222222s-20.1216-44.94222222-44.94222222-44.94222222-44.94222222 20.1216-44.94222223 44.94222222 20.1216 44.94222222 44.94222223 44.94222222z m-186.59555556-130.84444444c10.99662222 0 19.91111111-8.91448889 19.91111111-19.91111111s-8.91448889-19.91111111-19.91111111-19.91111112-19.91111111 8.91448889-19.91111111 19.91111112 8.91448889 19.91111111 19.91111111 19.91111111z m374.32888889 1.13777777c10.99662222 0 19.91111111-8.91448889 19.91111111-19.9111111s-8.91448889-19.91111111-19.91111111-19.91111112-19.91111111 8.91448889-19.91111111 19.91111112 8.91448889 19.91111111 19.91111111 19.9111111z m-186.59555556 310.61333334c10.99662222 0 19.91111111-8.91448889 19.91111112-19.91111111s-8.91448889-19.91111111-19.91111112-19.91111111-19.91111111 8.91448889-19.9111111 19.91111111 8.91448889 19.91111111 19.9111111 19.91111111z"></path>
-        </svg>
-        <h2>通过 Docker 安装</h2>
-        <!-- <div class="mdui-typo"><pre class="hljs php"><code class="lang-bash"><span
-                            class="hljs-comment"># 通过 docker run 运行容器</span>
-sudo docker run -P -d -p 10240:10240 -e deviceId=10-36位的自定义设备ID registry.cn-shenzhen.aliyuncs.com/hserver/hp:latest
-<span class="hljs-comment"># 通过 docker run 运行容器 ARM</span>
-sudo docker run -P -d -p 10240:10240 -e deviceId=10-36位的自定义设备ID registry.cn-shenzhen.aliyuncs.com/hserver/hp:latest-arm64
-</code></pre>
-        </div>
-    </div> -->
     <div class="feature">
         <svg class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <path d="M85.333333 34.133333A51.2 51.2 0 0 0 34.133333 85.333333v853.333334A51.2 51.2 0 0 0 85.333333 989.866667h853.333334a51.2 51.2 0 0 0 51.2-51.2V85.333333A51.2 51.2 0 0 0 938.666667 34.133333H85.333333zM85.333333 0h853.333334a85.333333 85.333333 0 0 1 85.333333 85.333333v853.333334a85.333333 85.333333 0 0 1-85.333333 85.333333H85.333333a85.333333 85.333333 0 0 1-85.333333-85.333333V85.333333a85.333333 85.333333 0 0 1 85.333333-85.333333z"></path>
@@ -175,6 +282,23 @@ curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh > install.sh
             </div>
         </div>
     </div>
+
+    <!-- 移动端优化 -->
+    <style>
+        @media (max-width: 768px) {
+            .cyber-logo {
+                max-width: 300px;
+            }
+            .cyber-logo use,
+            .cyber-logo animate,
+            .cyber-logo animateTransform {
+                display: none;
+            }
+            .cyber-logo text {
+                font-size: 32px;
+            }
+        }
+    </style>
 </div>
 </body>
 </html>
