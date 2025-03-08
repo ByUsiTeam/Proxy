@@ -39,6 +39,10 @@
         color: rgba(255, 255, 255, 0.9);
     }
 
+    .feature.case .meta {
+        color: #333;
+    }
+
     .actions {
         display: flex;
         gap: 1.5rem;
@@ -146,7 +150,6 @@
                     <tspan fill="#7dd3fc">Proxy</tspan>穿透
                 </text>
             </svg>
-            <div class="meta">我们支持TCP和UDP协议，针对 http/https ws/wss 协议做了大量的优化工作可以更加灵活的控制。让用户使用更佳舒服简单。</div>
         </div>
 
         <!-- 隐藏的原标题（SEO保留） -->
@@ -273,7 +276,7 @@ curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh > install.sh
                             <div class="mdui-col pay">
                                 <div>${pay.username}</div>
                                 <div>
-                                    <span>￥${pay.price}</span>
+                                    <span fill="#7dd3fc">￥${pay.price}</span>
                                 </div>
                             </div>
                         </#list>
