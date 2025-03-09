@@ -36,12 +36,12 @@
         max-width: 800px;
         margin: 0 auto 2rem;
         line-height: 1.6;
-        color: rgba(255, 255, 255, 0.9);
+        /* color: rgba(255, 255, 255, 0.9); */
     }
 
-    .feature.case .meta {
+    /* .feature.case .meta {
         color: #333;
-    }
+    } */
 
     .actions {
         display: flex;
@@ -75,7 +75,7 @@
 <div id="page-index" class="mdui-container">
     <div class="banner">
         <!-- 新增动态SVG Logo -->
-        <div class="cyber-logo">
+        <!-- <div class="cyber-logo">
             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
                 <defs>
                     <linearGradient id="proxyGradient" x1="50%" y1="0%" x2="50%" y2="100%">
@@ -100,7 +100,6 @@
                     </symbol>
                 </defs>
 
-                <!-- 背景链环动画 -->
                 <g transform="translate(256 256)" opacity="0.3">
                     <use xlink:href="#chainLink" transform="rotate(0) translate(140 0)"/>
                     <use xlink:href="#chainLink" transform="rotate(45) translate(140 0)"/>
@@ -113,7 +112,6 @@
                                       repeatCount="indefinite"/>
                 </g>
 
-                <!-- 核心图形 -->
                 <g transform="translate(256 256)">
                     <path d="M-120 0a120 120 0 0 1 240 0" 
                           fill="none"
@@ -141,6 +139,62 @@
                     </circle>
                 </g>
 
+                <text x="256" y="420" 
+                      text-anchor="middle"
+                      font-family="Arial" 
+                      font-size="42"
+                      fill="#38bdf8">
+                    <tspan fill="#7dd3fc">Proxy</tspan>穿透
+                </text>
+            </svg>
+        </div> -->
+        <div class="cyber-logo">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512">
+                <defs>
+                    <linearGradient id="proxyGradient" x1="50%" y1="0%" x2="50%" y2="100%">
+                        <stop offset="0%" stop-color="#7dd3fc"/>
+                        <stop offset="100%" stop-color="#38bdf8"/>
+                    </linearGradient>
+                    <filter id="cyberGlow" width="160%" height="160%">
+                        <feGaussianBlur stdDeviation="3" result="glow"/>
+                        <feColorMatrix values="0 0 0 0 0.4 0 0 0 0 0.6 0 0 0 0 0.9 0 0 0 0.7 0"/>
+                        <feMerge>
+                            <feMergeNode in="glow"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                    <pattern id="linkPattern" width="40" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M0 10 L20 10" stroke="#7dd3fc" stroke-width="2" stroke-dasharray="4 4"/>
+                    </pattern>
+                    <symbol id="chainLink">
+                        <rect x="-6" y="-3" width="12" height="6" rx="2" fill="url(#proxyGradient)"/>
+                    </symbol>
+                </defs>
+
+                <!-- 背景链环 -->
+                <g transform="translate(256 256)" opacity="0.3">
+                    <use xlink:href="#chainLink" transform="rotate(0) translate(140 0)"/>
+                    <use xlink:href="#chainLink" transform="rotate(45) translate(140 0)"/>
+                    <use xlink:href="#chainLink" transform="rotate(90) translate(140 0)"/>
+                    <use xlink:href="#chainLink" transform="rotate(135) translate(140 0)"/>
+                </g>
+
+                <!-- 核心图形 -->
+                <g transform="translate(256 256)">
+                    <path d="M-120 0a120 120 0 0 1 240 0" 
+                          fill="none"
+                          stroke="url(#proxyGradient)"
+                          stroke-width="14"
+                          stroke-linecap="round"
+                          filter="url(#cyberGlow)"
+                          opacity="0.9"/>
+                    <path d="M-60 0L40 0M30-10L40 0 30 10" 
+                          stroke="#38bdf8" 
+                          stroke-width="4"
+                          filter="url(#cyberGlow)"/>
+                    <circle r="24" fill="url(#proxyGradient)" filter="url(#cyberGlow)"/>
+                </g>
+
                 <!-- 文字标识 -->
                 <text x="256" y="420" 
                       text-anchor="middle"
@@ -152,7 +206,6 @@
             </svg>
         </div>
 
-        <!-- 隐藏的原标题（SEO保留） -->
         <h1><strong>Proxy</strong>内网穿透</h1>
         
         <div class="meta">我们支持TCP和UDP协议，针对 http/https ws/wss 协议做了大量的优化工作可以更加灵活的控制。让用户使用更佳舒服简单。</div>
