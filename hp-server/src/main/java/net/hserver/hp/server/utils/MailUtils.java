@@ -43,7 +43,7 @@ public class MailUtils {
             Session session = Session.getInstance(props, auth);
             Message message = new MimeMessage(session);
             //设置邮件发送者,与PasswordAuthentication中的邮箱一致即可
-            message.setFrom(new InternetAddress("ByUsi验证码<"+PropUtil.getInstance().get("mail.username")+">"));
+            message.setFrom(new InternetAddress("ByUsi%E9%AA%8C%E8%AF%81<"+PropUtil.getInstance().get("mail.username")+">"));
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(email));
             //设置邮件主题
             message.setSubject(subject);

@@ -14,7 +14,7 @@ public class MailQueue {
     @QueueHandler
     public void send(String username) {
         String code = generateCode4();
-        if (MailUtils.sendMail(username, "穿透验证", "验证码为:" + code)) {
+        if (MailUtils.sendMail(username, "Proxy穿透验证", "你的验证码为:" + code)) {
             ConstConfig.EMAIL_CODE.put(username, code);
         }else {
             ConstConfig.EMAIL_IP.invalidate(username);
