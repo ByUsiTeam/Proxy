@@ -7,12 +7,22 @@
 我们采用的是数据转发实现 稳定性可靠性是有保证的即便是极端的环境只要能上网就能实现穿透。
 我们支持TCP和UDP协议，针对 http/https ws/wss 协议做了大量的优化工作可以更加灵活的控制。让用户使用更佳舒服简单。
 
+#### 多仓库
+- Gitee：
+  ```url
+  https://gitee.com/byusi/proxy
+  ```
+- GitHub：
+  ```url
+  https://github.com/ByUsiTeam/Proxy
+  ```
+
 ### **Termux**和**Linux**快速部署脚本
   ```bash
   curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh > install.sh && bash install.sh
   ```
 
-## **Termux**和**Linux**快速解除部署脚本
+### **Termux**和**Linux**快速解除部署脚本
   ```bash
   curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/uninstall.sh > uninstall.sh && bash uninstall.sh
   ```
