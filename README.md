@@ -18,14 +18,24 @@
   ```
 
 ### **Termux**和**Linux**快速部署脚本
-  ```bash
-  curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh > install.sh && bash install.sh
-  ```
+  - Gitee
+   ```bash
+   curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh > install.sh && bash install.sh
+   ```
+  - GitHub
+   ```bash
+   curl -sSL https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/install.sh > install.sh && bash install.sh
+   ```
 
 ### **Termux**和**Linux**快速解除部署脚本
-  ```bash
-  curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/uninstall.sh > uninstall.sh && bash uninstall.sh
-  ```
+  - Gitee
+   ```bash
+   curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/uninstall.sh > uninstall.sh && bash uninstall.sh
+   ```
+  - GitHub
+   ```bash
+   curl -sSL https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/uninstall.sh > uninstall.sh && bash uninstall.sh
+   ```
 
 ### 原理图
 
