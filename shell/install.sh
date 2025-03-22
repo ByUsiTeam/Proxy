@@ -121,9 +121,9 @@ perform_installation() {
         
         # PATH检测
         if ! echo "$PATH" | grep -q "$INSTALL_DIR"; then
+            echo -e "嘿嘿，添加下环境权限被"
             echo -e "${YELLOW}⚠ 注意: 安装目录未加入PATH环境变量${RESET}"
-            echo -e "请将以下内容添加到shell配置文件："
-            # echo -e "export PATH=\"\$PATH:${INSTALL_DIR}\""
+            echo -e "export PATH=\"\$PATH:${INSTALL_DIR}\""
         fi
     else
         echo -e "${RED}✗ 安装验证失败！${RESET}"
