@@ -32,6 +32,7 @@
    ```bash
    curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/uninstall.sh > uninstall.sh && bash uninstall.sh
    ```
+
   - GitHub
    ```bash
    curl -sSL https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/uninstall.sh > uninstall.sh && bash uninstall.sh
