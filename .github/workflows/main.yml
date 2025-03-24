@@ -1,53 +1,49 @@
-name: Auto Build and Deploy AAR
+name: Auto Build Android AAR
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
     branches: [ master ]
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
     steps:
-    # 代码检出（启用写入权限）
+    # 代码检出（授予写权限）
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        persist-credentials: false  # 允许后续步骤提交代码
+        persist-credentials: false
 
-    # Go 环境配置
+    # 配置 Android 环境
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+
+    # 配置 Go 环境
     - name: Setup Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.21.x'
 
-    # Android 环境配置
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v2
-
-    - name: Install NDK
+    # 修复本地脚本环境变量
+    - name: Patch Android SDK Path
+      working-directory: ./hp-client-golang/android
       run: |
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.1.8937393"
+        # 获取 Actions 环境中的 SDK 路径
+        echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+        # 修复脚本中的路径指向
+        sed -i 's|export ANDROID_HOME=android-21|export ANDROID_HOME=${ANDROID_HOME}|g' build_android_aar.sh
+        chmod +x build_android_aar.sh
 
-    # Gomobile 安装
-    - name: Install Gomobile
-      run: go install golang.org/x/mobile/cmd/gomobile@latest
+    # 执行本地编译脚本
+    - name: Run Build Script
+      working-directory: ./hp-client-golang/android
+      run: ./build_android_aar.sh
 
-    - name: Init Gomobile
-      run: gomobile init
-
-    # 编译 Android 库
-    - name: Build AAR
-      working-directory: ./hp-client-golang/android  # 进入指定目录
-      run: gomobile bind -target=android -o android.aar -v android.go
-
-    # 自动提交到 GitHub Pages
-    - name: Commit to gh-pages
-      uses: actions-js/push@master
+    # 部署到 GitHub Pages
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
       with:
-        branch: gh-pages
-        directory: ./hp-client-golang/android  # 提交生成的 AAR 文件
-        force: true
-        message: "Auto deploy AAR [skip ci]"
-        target: force  # 强制覆盖历史记录
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./hp-client-golang/android
+        keep_files: false
+        force_orphan: true
