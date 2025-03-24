@@ -1,0 +1,53 @@
+name: Auto Build and Deploy AAR
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    # 代码检出（启用写入权限）
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        persist-credentials: false  # 允许后续步骤提交代码
+
+    # Go 环境配置
+    - name: Setup Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21.x'
+
+    # Android 环境配置
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+
+    - name: Install NDK
+      run: |
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.1.8937393"
+
+    # Gomobile 安装
+    - name: Install Gomobile
+      run: go install golang.org/x/mobile/cmd/gomobile@latest
+
+    - name: Init Gomobile
+      run: gomobile init
+
+    # 编译 Android 库
+    - name: Build AAR
+      working-directory: ./hp-client-golang/android  # 进入指定目录
+      run: gomobile bind -target=android -o android.aar -v android.go
+
+    # 自动提交到 GitHub Pages
+    - name: Commit to gh-pages
+      uses: actions-js/push@master
+      with:
+        branch: gh-pages
+        directory: ./hp-client-golang/android  # 提交生成的 AAR 文件
+        force: true
+        message: "Auto deploy AAR [skip ci]"
+        target: force  # 强制覆盖历史记录
