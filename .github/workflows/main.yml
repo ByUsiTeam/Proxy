@@ -7,46 +7,62 @@ on:
 jobs:
   build-android:
     runs-on: ubuntu-latest
+    env:
+      NDK_VERSION: 25.1.8937393  # 官方推荐的稳定版本
+      GO_VERSION: "1.23"         # 最低要求版本
+
     steps:
+    # 代码检出
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        persist-credentials: false  # 启用提交权限
+        persist-credentials: false  # 启用部署权限
 
-    - name: Setup Go 1.21
+    # 配置 Go 环境
+    - name: Setup Go ${{ env.GO_VERSION }}
       uses: actions/setup-go@v4
       with:
-        go-version: '1.21.x'
+        go-version: ${{ env.GO_VERSION }}
 
+    # 配置 Android 基础环境
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
 
-    - name: Install NDK 25.1.8937393
+    # 安装指定版本 NDK
+    - name: Install NDK ${{ env.NDK_VERSION }}
       run: |
-        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.1.8937393"
+        $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;${{ env.NDK_VERSION }}"
+        echo "NDK_PATH=$ANDROID_HOME/ndk/${{ env.NDK_VERSION }}" >> $GITHUB_ENV
 
+    # 初始化 GoMobile 环境
     - name: Initialize GoMobile
+      env:
+        ANDROID_NDK_HOME: ${{ env.NDK_PATH }}  # 强制指定NDK路径
       run: |
         go install golang.org/x/mobile/cmd/gomobile@latest
-        gomobile init
+        gomobile init -ndk ${{ env.NDK_PATH }}
 
-    - name: Build AAR Package
-      working-directory: ./hp-client-golang/android  # 进入目标目录
+    # 编译 AAR 文件
+    - name: Build Android Library
+      working-directory: ./hp-client-golang/android
+      env:
+        ANDROID_NDK_HOME: ${{ env.NDK_PATH }}  # 二次确认环境变量
       run: |
-        # 检查关键文件是否存在
-        if [ ! -f android.go ]; then
-          echo "❌ android.go 文件未找到"
-          exit 1
-        fi
+        echo "===== 环境验证 ====="
+        echo "Go version: $(go version)"
+        echo "NDK path: $ANDROID_NDK_HOME"
+        echo "===================="
         
-        # 执行编译命令
         gomobile bind -target=android -o android.aar -v .
-        ls -lh android.aar  # 显示生成文件信息
+        ls -lh android.aar  # 验证文件生成
 
+    # 部署到 GitHub Pages
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./hp-client-golang/android  # 指定AAR文件位置
-        force_orphan: true  # 强制覆盖历史
-        keep_files: false   # 清理旧文件
+        publish_dir: ./hp-client-golang/android  # 精确指定产物目录
+        keep_files: false
+        force_orphan: true
+        user_name: "GitHub Actions"
+        user_email: "actions@github.com"
