@@ -1,49 +1,52 @@
-name: Auto Build Android AAR
+name: GoMobile Build & Deploy
 
 on:
   push:
     branches: [ master ]
 
 jobs:
-  build-deploy:
+  build-android:
     runs-on: ubuntu-latest
     steps:
-    # 代码检出（授予写权限）
     - name: Checkout code
       uses: actions/checkout@v4
       with:
-        persist-credentials: false
+        persist-credentials: false  # 启用提交权限
 
-    # 配置 Android 环境
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v2
-
-    # 配置 Go 环境
-    - name: Setup Go
+    - name: Setup Go 1.21
       uses: actions/setup-go@v4
       with:
         go-version: '1.21.x'
 
-    # 修复本地脚本环境变量
-    - name: Patch Android SDK Path
-      working-directory: ./hp-client-golang/android
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+
+    - name: Install NDK 25.1.8937393
       run: |
-        # 获取 Actions 环境中的 SDK 路径
-        echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-        # 修复脚本中的路径指向
-        sed -i 's|export ANDROID_HOME=android-21|export ANDROID_HOME=${ANDROID_HOME}|g' build_android_aar.sh
-        chmod +x build_android_aar.sh
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;25.1.8937393"
 
-    # 执行本地编译脚本
-    - name: Run Build Script
-      working-directory: ./hp-client-golang/android
-      run: ./build_android_aar.sh
+    - name: Initialize GoMobile
+      run: |
+        go install golang.org/x/mobile/cmd/gomobile@latest
+        gomobile init
 
-    # 部署到 GitHub Pages
+    - name: Build AAR Package
+      working-directory: ./hp-client-golang/android  # 进入目标目录
+      run: |
+        # 检查关键文件是否存在
+        if [ ! -f android.go ]; then
+          echo "❌ android.go 文件未找到"
+          exit 1
+        fi
+        
+        # 执行编译命令
+        gomobile bind -target=android -o android.aar -v .
+        ls -lh android.aar  # 显示生成文件信息
+
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./hp-client-golang/android
-        keep_files: false
-        force_orphan: true
+        publish_dir: ./hp-client-golang/android  # 指定AAR文件位置
+        force_orphan: true  # 强制覆盖历史
+        keep_files: false   # 清理旧文件
