@@ -52,7 +52,9 @@ jobs:
       env:
         ANDROID_NDK_HOME: ${{ env.NDK_HOME }}  # 显式传递NDK路径
       run: |
-        gomobile bind -target=android -o android.aar -v .
+        gomonile init
+        gomobile bind -target=android
+        # gomobile bind -target=android -o android.aar -v .
 
     - name: Deploy to Pages
       uses: peaceiris/actions-gh-pages@v3
