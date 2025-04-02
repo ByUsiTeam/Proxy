@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.hserver.hp</groupId>
-    <artifactId>hp</artifactId>
+    <groupId>miao.byusi.hp</groupId>
+    <artifactId>proxy</artifactId>
     <packaging>pom</packaging>
     <version>15.0</version>
 
@@ -23,9 +23,9 @@
     </properties>
 
     <modules>
-        <module>hp-common</module>
-        <module>hp-server</module>
-        <module>hp-proxy</module>
+        <module>proxy-common</module>
+        <module>proxy-server</module>
+        <module>proxy-proxy</module>
     </modules>
 
     <dependencies>

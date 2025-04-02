@@ -14,3 +14,4 @@ target
 build
 *.jar
 go.sum
+proxy.zip
