@@ -1,4 +1,4 @@
-module hp-client-golang
+module proxy-client-golang
 
 go 1.16
 

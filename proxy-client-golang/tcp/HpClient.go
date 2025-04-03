@@ -1,7 +1,7 @@
 package tcp
 
 import (
-	"hp-client-golang/hpMessage"
+	"proxy-client-golang/hpMessage"
 	"net"
 
 	"strconv"

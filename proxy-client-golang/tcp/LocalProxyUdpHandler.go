@@ -1,8 +1,8 @@
 package tcp
 
 import (
-	"hp-client-golang/Protol"
-	"hp-client-golang/hpMessage"
+	"proxy-client-golang/Protol"
+	"proxy-client-golang/hpMessage"
 	"net"
 )
 

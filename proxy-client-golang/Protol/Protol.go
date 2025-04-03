@@ -6,7 +6,7 @@ import (
 	"encoding/binary"
 	"encoding/hex"
 	"github.com/golang/protobuf/proto"
-	"hp-client-golang/hpMessage"
+	"proxy-client-golang/hpMessage"
 	"io"
 )
 

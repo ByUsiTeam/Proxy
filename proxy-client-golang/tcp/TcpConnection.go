@@ -2,7 +2,7 @@ package tcp
 
 import (
 	"bufio"
-	"hp-client-golang/Protol"
+	"proxy-client-golang/Protol"
 	"io"
 	"net"
 	"strconv"

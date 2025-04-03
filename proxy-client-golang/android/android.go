@@ -1,7 +1,7 @@
 package android
 
 import (
-	"hp-client-golang/web"
+	"proxy-client-golang/web"
 )
 
 func Start(apiAddress string, port int, coreVersion string, deviceId string) {

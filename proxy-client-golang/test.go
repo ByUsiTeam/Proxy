@@ -1,8 +1,8 @@
 package main
 
 import (
-	"hp-client-golang/hpMessage"
-	"hp-client-golang/tcp"
+	"proxy-client-golang/hpMessage"
+	"proxy-client-golang/tcp"
 	"log"
 	"time"
 )
