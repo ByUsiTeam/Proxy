@@ -20,7 +20,14 @@ public class ConstConfig {
     /**
      * 邮箱验证码
      */
-    public static final Cache<String, String> EMAIL_CODE = CacheBuilder.newBuilder().expireAfterAccess(30, TimeUnit.MINUTES).build();
+    // 替换原有的EMAIL_CODE缓存
+    public static Cache<String, String> VERIFY_TOKENS = 
+        Caffeine.newBuilder()
+            .maximumSize(10_000)
+            .build();
+    
+    // 新增域名配置
+    public static final String DOMAIN = "https://pro.byusi.cn";
     /**
      * 调用者IP5分钟一次
      */

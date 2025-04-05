@@ -1,0 +1,48 @@
+/* MDUI风格定制 */
+.verify-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    padding: 2rem 0;
+}
+
+.verify-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: none;
+    overflow: hidden;
+}
+
+.verify-title {
+    color: #2c3e50;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    font-size: 1.5rem;
+}
+
+.verify-content .alert {
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+#resendBtn {
+    transition: all 0.3s ease;
+    background: #4a90e2;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+#resendBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+@media (max-width: 768px) {
+    .verify-card {
+        border-radius: 1rem !important;
+    }
+    
+    .verify-title {
+        font-size: 1.25rem;
+    }
+}
