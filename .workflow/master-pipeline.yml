@@ -1,6 +1,6 @@
 version: '1.0'
 name: master-pipeline
-displayName: MasterPipeline
+displayName: Build
 triggers:
   trigger: auto
   push:
