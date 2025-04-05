@@ -1,3 +1,3 @@
-export ANDROID_HOME=/data/data/com.termux/files/home/ByUsi/android-21
+export ANDROID_HOME=/home/beiane/Android/Sdk
 gomobile init
 gomobile bind -target=android
