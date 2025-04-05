@@ -21,19 +21,7 @@ public class MailQueue {
         }
     }
 
-    @QueueHandler
-    public void send(String email) {
-        // 生成验证token（示例使用UUID+时间戳）
-        String token = UUID.randomUUID().toString() + System.currentTimeMillis();
-        String verifyUrl = ConstConfig.DOMAIN + "/verify/email?token=" + token;
-        
-        if (MailUtils.sendVerifyEmail(email, verifyUrl)) {
-            // 存储token与邮箱的对应关系，有效期1小时
-            ConstConfig.VERIFY_TOKENS.put(token, email, 3600);
-        } else {
-            ConstConfig.EMAIL_IP.invalidate(email);
-        }
+    public String generateCode4() {
+        return Integer.toString(1000 + randObj.nextInt(9000));
     }
-
-    // 移除不再使用的generateCode4方法
 }

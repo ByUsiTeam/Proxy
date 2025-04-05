@@ -9,40 +9,6 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 public class MailUtils {
-    // 新增邮件模板生成方法
-    private static String buildVerifyEmailContent(String verifyUrl) {
-        return "<!DOCTYPE html>" +
-                "<html style='font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;'>" +
-                "<div style='max-width: 600px; margin: 20px auto; background: #f8f9fa; border-radius: 8px;'>" +
-                "  <div style='padding: 40px 30px; text-align: center;'>" +
-                "    <h2 style='color: #2c3e50; margin-bottom: 30px;'>邮箱验证通知</h2>" +
-                "    <p style='color: #6c757d; line-height: 1.6;'>请点击下方按钮完成邮箱验证：</p>" +
-                "    <a href='" + verifyUrl + "' style='" +
-                "      display: inline-block;" +
-                "      padding: 12px 30px;" +
-                "      background: #4a90e2;" +
-                "      color: white;" +
-                "      text-decoration: none;" +
-                "      border-radius: 25px;" +
-                "      margin: 25px 0;" +
-                "      transition: all 0.3s;" +
-                "      box-shadow: 0 2px 5px rgba(74,144,226,0.3);" +
-                "    '>立即验证</a>" +
-                "    <div style='color: #868e96; font-size: 0.9em; margin-top: 30px;'>" +
-                "      <p>该链接24小时内有效</p>" +
-                "      <p>若未请求验证，请忽略本邮件</p>" +
-                "    </div>" +
-                "  </div>" +
-                "</div>" +
-                "</html>";
-    }
-
-    // 修改原有发送方法
-    public static boolean sendVerifyEmail(String email, String verifyUrl) {
-        String subject = "【ByUsi Proxy】邮箱验证请求";
-        String emailContent = buildVerifyEmailContent(verifyUrl);
-        return sendMail(email, subject, emailContent);
-    }
     /**
      *
      * @param email     接收者邮箱
