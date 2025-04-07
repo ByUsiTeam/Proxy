@@ -1,6 +1,6 @@
 #!/bin/bash
 apt update -y
-apt install -y whiptail
+apt install -y whiptail curl wget zip unzip
 set -e
 
 # 显示whiptail对话框函数
