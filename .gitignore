@@ -15,4 +15,4 @@ build
 *.jar
 go.sum
 proxy.zip
-/proxy-client-golang/build/*
+# /proxy-client-golang/build/*
