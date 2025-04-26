@@ -1,3 +1,7 @@
+# 清除编译后的内容
+rm -rvf build/*
+
+# 编译
 echo "正在编译Windows的AMD64版Proxy穿透客户端...."
 export CGO_ENABLED=0
 export GOOS=windows
