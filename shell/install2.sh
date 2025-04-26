@@ -103,7 +103,7 @@ perform_installation() {
 
     # 验证安装
     if [ -x "$INSTALL_DIR/proxy" ]; then
-        whiptail --msgbox "✓ 安装成功！\n文件路径: ${INSTALL_DIR}/proxy" 12 50
+        whiptail --msgbox "✓ 安装成功！\n文件路径: ${INSTALL_DIR}/proxy\n使用命令：proxy" 12 50
         if ! echo "$PATH" | grep -q "$INSTALL_DIR"; then
             # whiptail --msgbox "注意: 安装目录未加入PATH环境变量\n请执行: export PATH=\"\$PATH:${INSTALL_DIR}\"" 12 50
             echo "额"
