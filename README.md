@@ -7,6 +7,9 @@
 我们采用的是数据转发实现 稳定性可靠性是有保证的即便是极端的环境只要能上网就能实现穿透。
 我们支持TCP和UDP协议，针对 http/https ws/wss 协议做了大量的优化工作可以更加灵活的控制。让用户使用更佳舒服简单。
 
+#### 源项目
+[![HServer/hp-内网穿透](https://gitee.com/HServer/hp/widgets/widget_card.svg?colors=4183c4,ffffff,ffffff,e3e9ed,666666,9b9b9b)](https://gitee.com/HServer/hp)
+
 #### 多仓库
 - Gitee：
   ```url
@@ -49,7 +52,7 @@
 
 
 
-### 安卓客服端
+### 安卓客服端（暂不支持）
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/d.jpg" width="500" />
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/e.jpg" width="500" />
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/f.jpg" width="500" />
