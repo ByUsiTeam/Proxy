@@ -9,19 +9,21 @@ import java.util.Random;
 
 @QueueListener(queueName = "EMAIL")
 public class MailQueue {
-    Random randObj = new Random();
+    private final Random randObj = new Random();
 
     @QueueHandler
-    public void send(String username) {
+    public void sendVerificationCode(String username) {
         String code = generateCode4();
-        if (MailUtils.sendMail(username, "ByUsi Proxy", "你的验证码为:" + code)) {
+        String htmlContent = MailUtils.buildVerificationEmail(code);
+        
+        if (MailUtils.sendHtmlMail(username, "ByUsi Proxy 安全验证码", htmlContent)) {
             ConstConfig.EMAIL_CODE.put(username, code);
-        }else {
+        } else {
             ConstConfig.EMAIL_IP.invalidate(username);
         }
     }
 
-    public String generateCode4() {
-        return Integer.toString(1000 + randObj.nextInt(9000));
+    private String generateCode4() {
+        return String.format("%04d", randObj.nextInt(10000));
     }
 }

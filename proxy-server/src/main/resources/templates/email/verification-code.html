@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ByUsi Proxy 验证码</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; }
+        .email-container { max-width: 600px; margin: 0 auto; padding: 20px; background: #f7f9fc; }
+        .card { background: white; border-radius: 16px; padding: 40px 30px; box-shadow: 0 8px 30px rgba(0,0,0,0.1); margin: 20px 0; border: 1px solid rgba(0,0,0,0.1); }
+        .brand-header { text-align: center; margin-bottom: 30px; }
+        .brand-logo { max-width: 120px; height: auto; margin-bottom: 20px; }
+        .code-container { text-align: center; margin: 30px 0; }
+        .verification-code { display: inline-block; padding: 15px 30px; background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%); color: white; font-size: 2.5em; border-radius: 12px; letter-spacing: 5px; font-weight: 700; margin: 20px 0; }
+        .content { color: #4a5568; line-height: 1.6; font-size: 16px; margin: 15px 0; }
+        .notice { color: #718096; font-size: 14px; margin-top: 25px; line-height: 1.5; }
+        @media (max-width: 480px) {
+            .card { padding: 25px 15px; border-radius: 12px; }
+            .verification-code { font-size: 2em; padding: 12px 25px; }
+            .content { font-size: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="card">
+            <div class="brand-header">
+                <img src="https://api.www.byusi.cn/proxy/proxy.svg" alt="ByUsi Proxy" class="brand-logo">
+                <h1 style="color: #1a365d; margin-bottom: 10px;">安全验证码</h1>
+            </div>
+
+            <p class="content">您好，您正在申请ByUsi Proxy账户操作，验证码为：</p>
+
+            <div class="code-container">
+                <div class="verification-code">{{CODE}}</div>
+            </div>
+
+            <p class="content">请勿将验证码告知他人，此验证码有效期为 <!-- <strong>5分钟</strong> --></p>
+
+            <div class="notice">
+                <p>⚠️ 安全提示：</p>
+                <ul style="padding-left: 20px; margin-top: 8px;">
+                    <li>本邮件由系统自动发送，请勿回复</li>
+                    <li>如非本人操作，请立即修改账户密码</li>
+                    <li>遇到可疑情况请联系客服 public@work.byusi.cn</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
