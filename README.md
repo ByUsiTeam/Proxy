@@ -22,29 +22,29 @@
 
 ### **Termux**和**Linux**快速部署脚本
   - Gitee
-   ```bash
-   wget -qO- https://gitee.com/byusi/proxy/raw/master/shell/install2.sh | bash
-   ```
+  ```bash
+  wget -qO- https://gitee.com/byusi/proxy/raw/master/shell/install2.sh | bash
+  ```
   - GitHub
-   ```bash
-   wget -qO- https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/install2.sh | bash
-   ```
+  ```bash
+  wget -qO- https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/install2.sh | bash
+  ```
 
 ### **Windows** 端一键安装命令
-   ```cmd
-   powershell -Command "Invoke-WebRequest -Uri 'https://gitee.com/byusi/proxy/raw/master/shell/install_win.bat' -OutFile 'install_proxy.bat'" && install_proxy.bat
-   ```
+  ```cmd
+  powershell -Command "Invoke-WebRequest -Uri 'https://gitee.com/byusi/proxy/raw/master/shell/install_win.bat' -OutFile 'install_proxy.bat'" && install_proxy.bat
+  ```
 
 ### **Termux**和**Linux**快速解除部署脚本
   - Gitee
-   ```bash
-   wget -qO- https://gitee.com/byusi/proxy/raw/master/shell/uninstall.sh | bash
-   ```
+  ```bash
+  wget -qO- https://gitee.com/byusi/proxy/raw/master/shell/uninstall.sh | bash
+  ```
 
   - GitHub
-   ```bash
-   wget -qO- https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/uninstall.sh | bash
-   ```
+  ```bash
+  wget -qO- https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/uninstall.sh | bash
+  ```
 
 ### 原理图
 
