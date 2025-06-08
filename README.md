@@ -32,7 +32,7 @@
 
 ### **Windows** 端一键安装命令
    ```cmd
-   powershell -Command "Invoke-WebRequest -Uri 'https://gitee.com/byusi/proxy/raw/shell/install_win.bat' -OutFile 'install_proxy.bat'" && install_proxy.bat
+   powershell -Command "Invoke-WebRequest -Uri 'https://gitee.com/byusi/proxy/raw/master/shell/install_win.bat' -OutFile 'install_proxy.bat'" && install_proxy.bat
    ```
 
 ### **Termux**和**Linux**快速解除部署脚本
