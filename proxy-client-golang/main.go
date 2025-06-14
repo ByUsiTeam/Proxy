@@ -90,8 +90,8 @@ func main() {
 	
 	logger.Info().
 		Str("url", "http://127.0.0.1:10240/").
-		Str("version", "15.4").
+		Str("version", "15.5").
 		Msg("服务就绪")
 	
-	web.StartWeb(0, "15.4")
+	web.StartWeb(0, "15.5")
 }
