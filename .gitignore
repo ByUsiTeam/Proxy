@@ -11,7 +11,7 @@ node_modules
 /git.sh
 target
 *.bak
-# build
+build/*
 *.jar
 go.sum
 proxy.zip
