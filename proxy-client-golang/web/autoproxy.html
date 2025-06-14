@@ -8,6 +8,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <link rel="stylesheet" href="common/css/mdui.min.css"/>
+    <link rel="stylesheet" href="common/css/proxy-beauty.css"/>
     <link rel="stylesheet" href="common/css/paging.css"/>
     <script src="/api.js"></script>
     <script src="common/js/jquery.min.js"></script>
@@ -112,11 +113,11 @@
         <p>当前设备ID:
         <p id="deviceId">如果未设置设备ID(意味着你用不了这个功能)</p></p>
         <p style="letter-spacing:.1rem">
-            <br>功能说明：<br>如果你在这里添加了云端存储，那么HP启动时就会加载云端配置，然后进行内网穿透，减少了每次打开都需要重新填写配置这种反人类的，头大的事情。该功能要求设备ID。
+            <br>功能说明：<br>如果你在这里添加了云端存储，那么Proxy启动时就会加载云端配置，然后进行内网穿透，减少了每次打开都需要重新填写配置这种反人类的，头大的事情。该功能要求设备ID。
             <br> <br>如何设置:<br>
         <ul>
             <li>设备ID要求：自定义10-36个字符串长度可以是字母或者数字（不要和别人冲突了，不要泄露了）</li>
-            <li>android中：自动获取IMIE为设备ID</li>
+            <!--<li>android中：自动获取IMIE为设备ID</li>-->
             <li>二进制文件：proxy-client -deviceId=设备ID</li>
         </ul>
         </p>
