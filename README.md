@@ -1,5 +1,7 @@
 # Proxy内网穿透
 
+- 加入官方群聊 [Telegram](https://t.me/+1_rc1TbWydVkN2I1) [QQ群](mqqapi://card/show_pslcard?src_type=internal&version=1&uin=822726278&card_type=group&source=qrcode)
+
 - 访客记录
   > ![访客记录](https://count.kjchmc.cn/get/@ByUsi-Proxy-master?theme=rule34)
 
