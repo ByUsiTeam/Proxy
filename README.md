@@ -25,22 +25,22 @@
 ### **Termux**和**Linux**快速部署脚本
   - Gitee
   ```bash
-  wget -qO- https://gitee.com/byusi/proxy/raw/master/shell/install2.sh | bash
+  bash -c "$(curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install2.sh)"
   ```
   - GitHub
   ```bash
-  wget -qO- https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/install2.sh | bash
+  bash -c "$(curl -sSL https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/install2.sh)"
   ```
 
 ### **Termux**和**Linux**快速解除部署脚本
   - Gitee
   ```bash
-  wget -qO- https://gitee.com/byusi/proxy/raw/master/shell/uninstall.sh | bash
+  bash -c "$(curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/uninstall.sh)"
   ```
 
   - GitHub
   ```bash
-  wget -qO- https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/uninstall.sh | bash
+  bash -c "(curl -sSL https://raw.githubusercontent.com/ByUsiTeam/Proxy/master/shell/uninstall.sh)"
   ```
 
 ### 原理图
