@@ -1,69 +1,98 @@
-# Proxy内网穿越编译教程
-> 演示是手机 **Termux**，这个教程不一定适配你的设备，但是我会尽量保证适配基于 **Debian** 的 **Linux** 发行版    
+# Proxy内网穿越编译教程  
 
-## 基础环境安装
-1. 更新系统环境
-  ```bash
-  apt update
-  apt upgrade
-  ```
-  > 如果遇到询问，请输入y回车
+> **适用说明**  
+> 本教程基于手机Termux环境演示，适配**Debian系Linux发行版**。  
+> 如遇环境差异，请灵活调整或寻求AI帮助解决。  
 
-2. 安装必要的软件包
-  ```bash
-  apt install git openjdk-17-jdk maven golang -y
-  ```
-  > 如果出现报错的话，请复制日志喂给AI，让他帮你解决这个问题（处理这个问题的时候请尽量包含耐心，不要气馁，也不要乱发脾气）
+---
 
-3. 拉取代码进入目录
-  - Gitee（国内环境推荐）
-  ```bash
-  git clone https://gitee.com/byusi/proxy.git
-  cd proxy
-  ```
-  - Github（国外环境推荐）
-  ```bash
-  git clone https://github.com/byusiteam/proxy.git
-  cd proxy
-  ```
-  > 这个步骤一般情况下不会报错，上一个不行的话换下一个
+## 一、基础环境准备  
 
-4. 编译Java代码（出现报错请自行复制报错日志，发给AI工具）
-  1. 根据需要修改配置
-   - 服务端
-    ```bash
-    nano proxy-server/src/main/resources/app.properties
-    ```
-   - 节点端
-    ```bash
-    nano proxy-proxy/src/main/resources/app.properties
-    ```
-  2. 修改客户端的程序的API地址
-   ```bash
-   nano proxy-client-golang/main.go
-   ```
-   > 注意只需要修改 89 行的 `web.InitCloudDevice("http://proxy.byusi.cn:9090", deviceId, logLevel)` 中的 `http://proxy.byusi.cn:9090` 为你的服务器的地址
+### 1. 系统更新  
+```bash  
+apt update && apt upgrade -y  
+```  
+> 出现提示时输入 `y` 并回车  
 
-  3. 编译Java程序
-   ```bash
-   mvn clean package
-   ```
-   > 编译之后的程序在 **proxy-server/target** 和 **proxy-proxy/target** 目录中，编译产出文件是以 **.jar** 结尾的，运行非常简单，只需要执行 **java -jar <路径>/<.jar文件>** 就可以运行了
+### 2. 安装依赖  
+```bash  
+apt install git openjdk-17-jdk maven golang -y  
+```  
+> **报错处理**：复制完整日志求助AI工具，保持耐心  
 
-  4. 编译golang客户端（用于本地服务，发送本地数据包到服务端，简单来说就是沟通本地与服务端，由服务端发送到公网，客户端发送本地数据到服务端）
-   - golang库安装
-   ```bash
-   cd proxy-client-golang
-   go mod tidy
-   ```
-   - 编译go程序
-   ```bash
-   chmod +x build.sh
-   ./build.sh
-   ```
-   > 编译完成的二进制文件在 **build** 目录中，根据自己的系统架构选择，**Linux x86_64** 系统的用户选择 **proxy-client-amd64** 就行了
+---
 
-## 声明
-1. 该教程不一定适配你的设备，但大概思路和方法与上面说的大相径庭
-2. 如果你根据上面的教程没有成功编译程序的话，那么请请教AI或者是请教其他大佬，我的话不一定能帮你解决，并且你也不一定联系的上我
-3. 不管你编译的成果如何，请心平气和
+## 二、代码获取  
+### ▶ 国内用户（Gitee源）  
+```bash  
+git clone https://gitee.com/byusi/proxy.git  
+cd proxy  
+```  
+
+### ▶ 国际用户（Github源）  
+```bash  
+git clone https://github.com/byusiteam/proxy.git  
+cd proxy  
+```  
+> 任一源失败可切换另一个  
+
+---
+
+## 三、配置修改  
+### 1. 服务端配置  
+```bash  
+nano proxy-server/src/main/resources/app.properties  
+```  
+
+### 2. 节点端配置  
+```bash  
+nano proxy-proxy/src/main/resources/app.properties  
+```  
+
+### 3. 客户端API地址  
+```bash  
+nano proxy-client-golang/main.go  
+```  
+> **关键修改**：  
+> 将第89行 `web.InitCloudDevice("http://proxy.byusi.cn:9090", deviceId, logLevel)`  
+> 中的URL替换为你的服务器地址  
+
+---
+
+## 四、编译流程  
+### ▶ Java程序编译  
+```bash  
+mvn clean package  
+```  
+**输出位置**：  
+- 服务端 → `proxy-server/target/*.jar`  
+- 节点端 → `proxy-proxy/target/*.jar`  
+
+**运行命令**：  
+```bash  
+java -jar /路径/文件名.jar  
+```  
+
+### ▶ Golang客户端编译  
+```bash  
+cd proxy-client-golang  
+go mod tidy           # 安装依赖  
+chmod +x build.sh     # 添加执行权限  
+./build.sh            # 开始编译  
+```  
+**输出位置**：  
+- 二进制文件 → `build/` 目录  
+- **Linux x86_64用户** → 选择 `proxy-client-amd64`  
+
+---
+
+## 重要声明  
+1. **环境差异**：教程可能不完全适配你的设备，但核心流程通用  
+2. **故障处理**：  
+   - 编译报错 → 复制完整日志求助AI工具  
+   - 联系作者 → 可能无法及时响应  
+3. **心态建议**：  
+   - 保持心平气和  
+   - 技术问题可通过社区/论坛解决  
+
+> **最后提示**：内网穿透涉及网络安全，请遵守当地法律法规使用
