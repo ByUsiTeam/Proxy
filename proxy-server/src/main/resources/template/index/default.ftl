@@ -310,7 +310,7 @@
         <h2>从 命令行 运行</h2>
         <div class="mdui-typo"><pre class="hljs php"><code class="lang-bash"><span
                             class="hljs-comment"># 通过参数运行</span>
-curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install.sh > install.sh && bash install.sh
+bash -c "$(curl -sSL https://gitee.com/byusi/proxy/raw/master/shell/install2.sh)"
 </code></pre>
         </div>
     </div>
