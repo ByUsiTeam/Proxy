@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"proxy-client-golang/pkg/logger"
 	"proxy-client-golang/web"
 	"time"
 
@@ -17,7 +18,7 @@ const (
 	LogLevelError
 )
 
-func initLogger(level int) zerolog.Logger {
+func initLogger(level int) logger.Logger {
 	output := zerolog.ConsoleWriter{
 		Out:        os.Stdout,
 		TimeFormat: time.DateTime,
@@ -39,7 +40,7 @@ func initLogger(level int) zerolog.Logger {
 		},
 	}
 
-	logger := zerolog.New(output).With().Timestamp().Logger()
+	zl := zerolog.New(output).With().Timestamp().Logger()
 
 	switch level {
 	case LogLevelDebug:
@@ -52,7 +53,7 @@ func initLogger(level int) zerolog.Logger {
 		zerolog.SetGlobalLevel(zerolog.ErrorLevel)
 	}
 
-	return logger
+	return &logger.ZeroLogger{Logger: zl}
 }
 
 func main() {
@@ -73,25 +74,15 @@ func main() {
 	}
 
 	// 初始化日志系统
-	logger := initLogger(logLevel)
+	log := initLogger(logLevel)
 	
 	// 使用示例
-	logger.Info().
-		Str("deviceId", deviceId).
-		Int("logLevel", logLevel).
-		Msg("启动参数")
+	log.Infof("启动参数 deviceId=%s logLevel=%d", deviceId, logLevel)
+	log.Debugf("调试信息 timestamp=%d goroutines=%d", time.Now().Unix(), 15)
 
-	logger.Debug().
-		Int64("timestamp", time.Now().Unix()).
-		Int("goroutines", 15).
-		Msg("调试信息示例")
-
-	web.InitCloudDevice("http://proxy.byusi.cn:9090", deviceId, logLevel)
+	web.InitCloudDevice("http://proxy.byusi.cn:9090", deviceId, logLevel, log)
 	
-	logger.Info().
-		Str("url", "http://127.0.0.1:10240/").
-		Str("version", "15.5").
-		Msg("服务就绪")
+	log.Infof("服务就绪 url=%s version=%s", "http://127.0.0.1:10240/", "15.5")
 	
-	web.StartWeb(0, "15.5")
+	web.StartWeb(0, "15.5", log)
 }
