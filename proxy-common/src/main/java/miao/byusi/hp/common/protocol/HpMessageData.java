@@ -2648,7 +2648,7 @@ public final class HpMessageData {
       descriptor;
   static {
     String[] descriptorData = {
-      "\n\017HpMessage.proto\022\036net.hserver.hp.common" +
+      "\n\017HpMessage.proto\022\036miao.byusi.hp.common" +
       ".protocol\"\212\004\n\tHpMessage\022E\n\004type\030\001 \001(\01627." +
       "miao.byusi.hp.common.protocol.HpMessage" +
       ".HpMessageType\022D\n\010metaData\030\002 \001(\01322.net.h" +

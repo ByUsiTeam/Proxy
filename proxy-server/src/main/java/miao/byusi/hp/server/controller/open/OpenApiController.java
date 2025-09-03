@@ -285,7 +285,7 @@ public class OpenApiController {
         return JsonResult.ok().put("data",appVersion );
     }
 
-
+    /*
     @GET("/app/download")
     public void download(HttpResponse response, HttpRequest request) throws Exception {
 
@@ -307,4 +307,5 @@ public class OpenApiController {
             }
         }, request);
     }
+    */
 }

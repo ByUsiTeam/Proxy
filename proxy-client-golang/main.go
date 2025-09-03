@@ -80,7 +80,7 @@ func main() {
 	log.Infof("启动参数 deviceId=%s logLevel=%d", deviceId, logLevel)
 	log.Debugf("调试信息 timestamp=%d goroutines=%d", time.Now().Unix(), 15)
 
-	web.InitCloudDevice("http://proxy.byusi.cn:9090", deviceId, logLevel, log)
+	web.InitCloudDevice("http://proxy.cdifit.cn:9090", deviceId, logLevel, log)
 	
 	log.Infof("服务就绪 url=%s version=%s", "http://127.0.0.1:10240/", "15.5")
 	

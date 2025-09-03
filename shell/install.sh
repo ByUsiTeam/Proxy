@@ -63,11 +63,11 @@ perform_installation() {
     local os_type=$1
     local ARCH=$(detect_architecture)
     local FILENAME="proxy-client-${ARCH}"
-    local DOWNLOAD_URL="https://api.www.byusi.cn/proxy/client/${FILENAME}"
+    local DOWNLOAD_URL="https://api.www.cdifit.cn/proxy/client/${FILENAME}"
 
     if [ "$os_type" = "termux" ]; then
         FILENAME="proxy-client-android"
-        DOWNLOAD_URL="https://api.www.byusi.cn/proxy/client/${FILENAME}"
+        DOWNLOAD_URL="https://api.www.cdifit.cn/proxy/client/${FILENAME}"
     fi
 
     local TEMP_FILE=$(mktemp)
