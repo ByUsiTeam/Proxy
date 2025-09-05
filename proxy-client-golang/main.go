@@ -82,7 +82,7 @@ func main() {
 
 	web.InitCloudDevice("http://proxy.cdifit.cn:9090", deviceId, logLevel, log)
 	
-	log.Infof("服务就绪 url=%s version=%s", "http://127.0.0.1:10240/", "15.5")
+	log.Infof("服务就绪 url=%s version=%s", "http://127.0.0.1:10240/", "15.6")
 	
-	web.StartWeb(0, "15.5", log)
+	web.StartWeb(0, "15.6", log)
 }
