@@ -366,6 +366,7 @@ func StartWeb(webPort int, coreVersion string, logger logger.Logger) {
 	e.GET("/", func(c *gin.Context) {
 		log.Debugf("根路径请求，重定向到登录页")
 		c.Redirect(http.StatusMovedPermanently, "/static/login.html")
+		//c.Redirect(http.StatusMovedPermanently, "/static/index.html")
 	})
 
 	e.GET("/ws", func(c *gin.Context) {
