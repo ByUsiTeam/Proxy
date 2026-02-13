@@ -76,9 +76,8 @@ func main() {
 	// 初始化日志系统
 	log := initLogger(logLevel)
 	
-	// 使用示例
 	log.Infof("启动参数 deviceId=%s logLevel=%d", deviceId, logLevel)
-	log.Debugf("调试信息 timestamp=%d goroutines=%d", time.Now().Unix(), 15)
+	// log.Debugf("调试信息 timestamp=%d goroutines=%d", time.Now().Unix(), 15)
 
 	web.InitCloudDevice("https://proxy.properos.cn", deviceId, logLevel, log)
 	
