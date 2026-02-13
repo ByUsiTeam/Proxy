@@ -8,3 +8,7 @@ cd proxy-client-golang
 go mod tidy
 bash build.sh
 echo "不出意外的话现在已经完成了所有的编译步骤！"
+echo "输出在以下目录
+proxy-server/target
+proxy-proxy/target
+proxy-client-golang/build"
