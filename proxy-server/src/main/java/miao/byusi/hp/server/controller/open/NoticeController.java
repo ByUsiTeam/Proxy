@@ -1,4 +1,4 @@
-package net.hserver.hp.server.controller.open;
+package miao.byusi.hp.server.controller.open;
 
 import cn.hserver.core.queue.HServerQueue;
 import cn.hserver.core.server.util.JsonResult;
