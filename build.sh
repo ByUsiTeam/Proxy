@@ -114,6 +114,9 @@ build_go() {
             go mod init proxy-client-golang
         fi
         
+        # init变量
+        go env -w GO111MODULE=on
+        go env -w GOPROXY=https://mirrors.aliyun.com/goproxy/,direct
         # 整理依赖
         go mod tidy
         info "Go依赖整理完成"
