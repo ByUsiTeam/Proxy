@@ -1,4 +1,4 @@
-# Windows PowerShell 编译脚本
+﻿# Windows PowerShell 编译脚本
 # 功能：交叉编译 proxy-client 到多个平台
 # 用法：在 PowerShell 中右键“使用 PowerShell 运行”，或在终端中执行
 
