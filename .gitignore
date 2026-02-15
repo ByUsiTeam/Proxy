@@ -17,3 +17,4 @@ go.sum
 proxy.zip
 /proxy-client-golang/build/*
 /proxy-client-golang/*.zip
+/.vscode
