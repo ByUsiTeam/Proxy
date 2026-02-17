@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Proxy-Client</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Proxy-Client</string>
+    <string name="nav_header_subtitle">黑小马\n修改者：北</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_about">软件声明</string>
+    <string name="msg_sm">本软件仅供开发测试使用，禁止使用本软件做一些非法的事情，出现问题后果自负。本软件提供免费服务，在没使用的情况请关闭本软件。需要固定外网端口的用户请私聊.
+        \n服务器端和PC客服端开源地址\nhttps://gitee.com/HServer/hp\n修改版开源地址：https://gitee.com/byusi/proxy
+        \n</string>
+    <string name="msg_qq">KSWEB交流群：432217351\nByUsi的交流群：819479864</string>
+    <string name="menu_home">穿透配置</string>
+    <string name="menu_gallery">穿透记录</string>
+    <string name="menu_send">重新登陆</string>
+</resources>
