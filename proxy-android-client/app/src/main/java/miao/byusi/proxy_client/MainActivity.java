@@ -180,11 +180,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_about:
-                createAboutAlert().show();
-                break;
+        int id =item.getItemId();
+        if (id == R.id.action_about) {
+            createAboutAlert().show();
         }
+        
 
         return super.onOptionsItemSelected(item);
     }

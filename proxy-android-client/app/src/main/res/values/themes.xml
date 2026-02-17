@@ -1,20 +1,19 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+  <style name="Base.AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+  </style>
 
-    <!-- Base application theme. -->
+  <!-- <style name="AppTheme" parent="Base.AppTheme" /> -->
+      <!-- 基础应用主题 -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+        <!-- 自定义属性 -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
+    <!-- 添加缺失的 AppBarOverlay 样式 -->
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
+    <!-- 添加缺失的 PopupOverlay 样式 -->
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
 </resources>
