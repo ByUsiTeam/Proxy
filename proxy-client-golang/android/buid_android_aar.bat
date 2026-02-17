@@ -1,3 +1,4 @@
+@echo off
 gomobile init
-# gomobile bind -target=android
+@REM gomobile bind -target=android
 gomobile bind -target=android -androidapi 21
