@@ -11,8 +11,8 @@ android {
         applicationId 'miao.byusi.proxy_client'
         minSdk 21
         targetSdk 34
-        versionCode 1
-        versionName '1.0'
+        versionCode 1020
+        versionName '1.2.0'
     }
 
     buildFeatures {
