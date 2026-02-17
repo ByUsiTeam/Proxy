@@ -2,7 +2,7 @@ package android
 
 import (
     "proxy-client-golang/web"
-    "android/pkg/logger"
+    _"proxy-client-golang/pkg/logger"
 )
 
 // 自定义一个简单的 logger 实现
