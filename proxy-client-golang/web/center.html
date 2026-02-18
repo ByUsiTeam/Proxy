@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="format-detection" content="telephone=no">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="common/css/proxy-beauty.css">
     <script src="/api.js"></script>
@@ -21,9 +22,13 @@
         <div class="header-spacer"></div>
         <div class="user-info">
             <span class="user-badge" id="userInfoDisplay">
-                <span id="username">***</span> · <span id="level">***</span>
+                <span id="username">***</span>
+                <span class="hide-mobile"> · <span id="level">***</span></span>
             </span>
-            <button class="logout-btn" id="login_out">退出</button>
+            <button class="logout-btn" id="login_out">
+                <i class="material-icons show-mobile" style="font-size: 1.2rem;">exit_to_app</i>
+                <span class="hide-mobile">退出</span>
+            </button>
         </div>
     </header>
 
@@ -55,18 +60,18 @@
     </aside>
 
     <main class="main-content" id="mainContent">
-        <div class="flex gap-2 mb-4">
+        <div class="flex gap-2 mb-3">
             <button class="btn btn-primary" onclick="openAddDialog()">
                 <i class="material-icons" style="font-size: 1.25rem;">add</i>
-                添加穿透
+                <span class="hide-mobile">添加穿透</span>
             </button>
             <button class="btn btn-outline" id="checkCore">
                 <i class="material-icons" style="font-size: 1.25rem;">info</i>
-                检查内核
+                <span class="hide-mobile">检查内核</span>
             </button>
             <button class="btn btn-outline" id="refUser">
                 <i class="material-icons" style="font-size: 1.25rem;">refresh</i>
-                刷新配置
+                <span class="hide-mobile">刷新</span>
             </button>
         </div>
 
@@ -74,7 +79,7 @@
             <div class="card-header">
                 <h3 class="card-title">穿透服务列表</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -116,12 +121,12 @@
                     
                     <div class="form-group">
                         <label class="form-label">内网IP</label>
-                        <input class="form-input" name="ip" placeholder="内网IP" type="text">
+                        <input class="form-input" name="ip" placeholder="例如: 127.0.0.1" type="text">
                     </div>
                     
                     <div class="form-group">
                         <label class="form-label">内网端口</label>
-                        <input class="form-input" name="port" placeholder="内网端口" type="text">
+                        <input class="form-input" name="port" placeholder="例如: 8080" type="text">
                     </div>
 
                     <div class="form-group">
@@ -139,9 +144,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" id="server_data">
-                        <label class="form-label">穿透服务选择</label>
-                    </div>
+                    <div class="form-group" id="server_data"></div>
 
                     <div style="display: none;" class="form-group" id="showServerInfoInPut">
                         <label class="form-label">自定义穿透服务</label>
@@ -177,12 +180,10 @@
     </div>
 
     <script>
-        // 全局变量
         var userInfo = null;
         var ws = null;
 
         $(function() {
-            // 检查登录状态
             var storedUserInfo = localStorage.getItem("userInfo");
             if (!storedUserInfo) {
                 location.href = "login.html";
@@ -193,29 +194,35 @@
             $("#username").text(userInfo.username || "***");
             $("#level").text(userInfo.level || "***");
             
-            // 显示提示信息
             if (userInfo.tips) {
                 alert(userInfo.tips);
             }
             
-            // 退出登录
             $("#login_out").click(function() {
                 localStorage.removeItem("userInfo");
                 location.href = "login.html";
             });
 
-            // 侧边栏控制
             $("#menuToggle").click(function() {
-                $("#sidebar").toggleClass("open");
-                $("#sidebarOverlay").toggleClass("active");
+                $("#sidebar").addClass("open");
+                $("#sidebarOverlay").addClass("active");
+                $("body").css("overflow", "hidden");
             });
 
             $("#sidebarOverlay").click(function() {
                 $("#sidebar").removeClass("open");
                 $("#sidebarOverlay").removeClass("active");
+                $("body").css("overflow", "");
             });
 
-            // 检查内核版本
+            $(window).resize(function() {
+                if ($(window).width() >= 1024) {
+                    $("#sidebar").removeClass("open");
+                    $("#sidebarOverlay").removeClass("active");
+                    $("body").css("overflow", "");
+                }
+            });
+
             $("#checkCore").click(function() {
                 $.get("/core/version", function(result) {
                     alert(result.Msg || "未知版本");
@@ -224,7 +231,6 @@
                 });
             });
 
-            // 刷新用户信息
             $("#refUser").click(function() {
                 $.post(apiAddress + "/user/login", {username: userInfo.username, password: userInfo.password}, function(result) {
                     if (result.code === 200) {
@@ -238,16 +244,14 @@
                 });
             });
 
-            // 显示打赏弹窗
             var showPay = localStorage.getItem("showPay");
-            if (showPay == 0) {
+            if (showPay == "0") {
                 setTimeout(function() {
                     openPayDialog();
                 }, 500);
                 localStorage.setItem("showPay", "1");
             }
 
-            // 初始化表单和加载数据
             initForm();
             loadServerList();
             initWebSocket();
@@ -255,18 +259,24 @@
 
         function openAddDialog() {
             $("#addModal").addClass("open");
+            $("body").css("overflow", "hidden");
         }
 
         function closeAddDialog() {
             $("#addModal").removeClass("open");
+            $("body").css("overflow", "");
+            $("#handle-form")[0].reset();
+            $("#showServerInfoInPut").hide();
         }
 
         function openPayDialog() {
             $("#payModal").addClass("open");
+            $("body").css("overflow", "hidden");
         }
 
         function closePayDialog() {
             $("#payModal").removeClass("open");
+            $("body").css("overflow", "");
         }
 
         function initForm() {
@@ -275,7 +285,6 @@
             $("#password").val(userInfo.password || "");
             $("#usernameFrom").val(userInfo.username || "");
 
-            // 域名选项
             var domainHtml = '<label class="form-label">穿透域名</label><div class="radio-group">';
             if (userInfo.domains && Object.keys(userInfo.domains).length > 0) {
                 for (let a of Object.keys(userInfo.domains)) {
@@ -289,10 +298,9 @@
             domainHtml += '</div>';
             $("#domains").html(domainHtml);
 
-            // 端口选项
-            var portsHtml = '<label class="form-label">外网端口号</label><div class="radio-group">' +
+            var portsHtml = '<label class="form-label">外网端口</label><div class="radio-group">' +
                 '<label class="radio-label">' +
-                '<input type="radio" value="0" name="remote_port"> 随机端口' +
+                '<input type="radio" value="0" name="remote_port"> 随机' +
                 '</label>';
             if (userInfo.ports && userInfo.ports.length > 0) {
                 for (let a of userInfo.ports) {
@@ -304,24 +312,22 @@
             portsHtml += '</div>';
             $("#ports").html(portsHtml);
 
-            // 服务选项
             $.get(apiAddress + "/load/data", function(result) {
                 var serverData = (result.code === 200 && result.data) ? result.data : [];
-                var serverDataHtml = '<label class="form-label">穿透服务选择</label><div class="radio-group">';
+                var serverDataHtml = '<label class="form-label">穿透服务</label><div class="radio-group">';
                 
                 for (let a of serverData) {
                     serverDataHtml += '<label class="radio-label">' +
                         '<input type="radio" value="' + a.ip + ':' + a.port + '" name="server_info"> ' +
-                        a.name + ' (在线:' + (a.num || 0) + ')' +
+                        a.name + '(' + (a.num || 0) + ')' +
                         '</label>';
                 }
                 serverDataHtml += '<label class="radio-label">' +
-                    '<input type="radio" value="-1" name="server_info"> 自定义服务' +
+                    '<input type="radio" value="-1" name="server_info"> 自定义' +
                     '</label></div>';
                 
                 $("#server_data").html(serverDataHtml);
 
-                // 绑定事件
                 $("input[name='server_info']").on("click", function() {
                     if ($(this).val() == -1) {
                         $("#showServerInfoInPut").show();
@@ -338,7 +344,7 @@
                     }
                 });
             }).fail(function() {
-                $("#server_data").html('<div class="text-secondary">加载服务列表失败</div>');
+                $("#server_data").html('<div class="text-secondary">加载失败</div>');
             });
         }
 
@@ -355,7 +361,8 @@
                             '<td><span class="badge ' + statusClass + '">' + (a.Status || '未知') + '</span></td>' +
                             '<td>' +
                             '<button class="btn btn-danger btn-sm" onclick="stopServer(\'' + (a.Domain || '') + '\')">' +
-                            '<i class="material-icons" style="font-size: 1.25rem;">stop</i> 停止' +
+                            '<i class="material-icons" style="font-size: 1.25rem;">stop</i>' +
+                            '<span class="hide-mobile">停止</span>' +
                             '</button>' +
                             '</td>' +
                             '</tr>';
@@ -374,7 +381,7 @@
                 alert("无效的域名");
                 return;
             }
-            if (confirm("确定要停止这个穿透服务吗？")) {
+            if (confirm("确定停止？")) {
                 $.get("/server/stop?domain=" + domain, function(result) {
                     alert(result.Msg || "操作成功");
                     loadServerList();
@@ -387,7 +394,6 @@
         $("#add_btn").click(function() {
             let serialize = $("#handle-form").serializeArray();
             
-            // 处理自定义服务
             for (let a of serialize) {
                 if (a.name == 'server_info' && a.value == '-1') {
                     a.value = $("#showServerInfoInPutVal").val();
@@ -398,7 +404,6 @@
                 }
             }
             
-            // 验证必填项
             var hasIp = false, hasPort = false;
             for (let a of serialize) {
                 if (a.name == 'ip' && a.value) hasIp = true;
@@ -434,7 +439,6 @@
                             '<div class="log-message">' + (result.Msg || evt.data) + '</div>' +
                             '</li>'
                         );
-                        // 限制日志条数
                         if ($(".log-item").length > 50) {
                             $(".log-item:gt(49)").remove();
                         }

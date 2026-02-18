@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="format-detection" content="telephone=no">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="common/css/proxy-beauty.css">
     <script src="/api.js"></script>
@@ -20,10 +21,13 @@
         <a href="center.html" class="logo">Proxy<span>内网穿透</span></a>
         <div class="header-spacer"></div>
         <div class="user-info">
-            <span class="user-badge">
-                <span id="username">***</span> · <span id="level">***</span>
+            <span class="user-badge" id="userInfoDisplay">
+                <span id="username">***</span>
             </span>
-            <button class="logout-btn" id="login_out">退出</button>
+            <button class="logout-btn" id="login_out">
+                <i class="material-icons show-mobile" style="font-size: 1.2rem;">exit_to_app</i>
+                <span class="hide-mobile">退出</span>
+            </button>
         </div>
     </header>
 
@@ -55,14 +59,14 @@
     </aside>
 
     <main class="main-content" id="mainContent">
-        <div class="flex justify-between items-center mb-4">
+        <div class="flex justify-between items-center mb-3">
             <button class="btn btn-primary" onclick="openAddDialog()">
                 <i class="material-icons" style="font-size: 1.25rem;">add</i>
-                添加穿透配置
+                <span class="hide-mobile">添加穿透配置</span>
             </button>
             <div class="device-badge">
-                <i class="material-icons" style="font-size: 1rem; vertical-align: middle;">devices</i>
-                <span id="deviceIdText">未设置设备ID</span>
+                <i class="material-icons" style="font-size: 1rem;">devices</i>
+                <span id="deviceIdText">未设置ID</span>
             </div>
         </div>
 
@@ -70,7 +74,7 @@
             <div class="card-header">
                 <h3 class="card-title">穿透配置列表</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table">
                         <thead>
@@ -78,9 +82,9 @@
                                 <th>设备ID</th>
                                 <th>内网服务</th>
                                 <th>外网服务</th>
-                                <th>穿透类型</th>
-                                <th>穿透域名</th>
-                                <th>穿透端口</th>
+                                <th>类型</th>
+                                <th>域名</th>
+                                <th>端口</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -95,18 +99,17 @@
                 <h3 class="card-title">功能说明</h3>
             </div>
             <div class="card-body">
-                <p class="text-secondary mb-4">
-                    当前设备ID: <strong id="deviceId">如果未设置设备ID(意味着你用不了这个功能)</strong>
+                <p class="text-secondary mb-3">
+                    当前设备ID: <strong id="deviceId">未设置</strong>
                 </p>
-                <p class="text-secondary">
-                    如果你在这里添加了云端存储，那么Proxy启动时就会加载云端配置，然后进行内网穿透，
-                    减少了每次打开都需要重新填写配置这种反人类的，头大的事情。该功能要求设备ID。
+                <p class="text-xs text-secondary">
+                    添加云端存储后，Proxy启动时自动加载配置进行穿透，减少重复配置。
                 </p>
-                <div class="mt-4">
-                    <h4 style="font-weight: 600; margin-bottom: var(--space-2);">如何设置:</h4>
-                    <ul class="text-secondary" style="padding-left: var(--space-6);">
-                        <li>设备ID要求：自定义10-36个字符串长度可以是字母或者数字（不要和别人冲突了，不要泄露了）</li>
-                        <li>二进制文件：proxy-client -deviceId=设备ID</li>
+                <div class="mt-3">
+                    <h4 class="text-sm" style="font-weight: 600; margin-bottom: var(--space-2);">如何设置:</h4>
+                    <ul class="text-xs text-secondary" style="padding-left: var(--space-4);">
+                        <li>设备ID：10-36位字母数字组合</li>
+                        <li>启动命令：proxy-client -deviceId=设备ID</li>
                     </ul>
                 </div>
             </div>
@@ -124,7 +127,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="form-label">内网服务</label>
-                        <input class="form-input" name="userHost" placeholder="内网服务（ip:端口）" type="text">
+                        <input class="form-input" name="userHost" placeholder="例如: 127.0.0.1:8080" type="text">
                     </div>
 
                     <div class="form-group">
@@ -142,9 +145,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group" id="server_data">
-                        <label class="form-label">穿透服务选择</label>
-                    </div>
+                    <div class="form-group" id="server_data"></div>
 
                     <div style="display: none;" class="form-group" id="showServerInfoInPut">
                         <label class="form-label">自定义穿透服务</label>
@@ -163,90 +164,112 @@
     </div>
 
     <script>
+        var userInfo = null;
+        var deviceId = "NO_ID";
+
         $(function() {
-            var userInfo = localStorage.getItem("userInfo");
-            if (!userInfo) {
+            var storedUserInfo = localStorage.getItem("userInfo");
+            if (!storedUserInfo) {
                 location.href = "login.html";
-            } else {
-                userInfo = JSON.parse(userInfo);
-                $("#username").text(userInfo.username);
-                $("#level").text(userInfo.level);
+                return;
             }
+            
+            userInfo = JSON.parse(storedUserInfo);
+            $("#username").text(userInfo.username || "***");
             
             $("#login_out").click(function() {
                 localStorage.removeItem("userInfo");
                 location.href = "login.html";
             });
 
-            // 侧边栏控制
             $("#menuToggle").click(function() {
-                $("#sidebar").toggleClass("open");
-                $("#sidebarOverlay").toggleClass("active");
+                $("#sidebar").addClass("open");
+                $("#sidebarOverlay").addClass("active");
+                $("body").css("overflow", "hidden");
             });
 
             $("#sidebarOverlay").click(function() {
                 $("#sidebar").removeClass("open");
                 $("#sidebarOverlay").removeClass("active");
+                $("body").css("overflow", "");
             });
 
-            // 获取设备ID
-            $.get("/device/info", function(result) {
-                if (result !== "NO_ID") {
-                    $("#deviceIdText").text(result.slice(0, 6) + "..." + result.slice(-6));
-                    $("#deviceId").text(result);
+            $(window).resize(function() {
+                if ($(window).width() >= 1024) {
+                    $("#sidebar").removeClass("open");
+                    $("#sidebarOverlay").removeClass("active");
+                    $("body").css("overflow", "");
                 }
             });
 
-            // 初始化弹窗
+            $.get("/device/info", function(result) {
+                if (result && result !== "NO_ID") {
+                    deviceId = result;
+                    $("#deviceIdText").text(result.slice(0, 4) + "..." + result.slice(-4));
+                    $("#deviceId").text(result);
+                }
+            }).fail(function() {
+                $("#deviceIdText").text("获取失败");
+            });
+
             initPop();
             loadConfigList();
         });
 
-        var userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        var deviceId = "NO_ID";
-
         function openAddDialog() {
             $("#addModal").addClass("open");
+            $("body").css("overflow", "hidden");
         }
 
         function closeAddDialog() {
             $("#addModal").removeClass("open");
+            $("body").css("overflow", "");
+            $("#handle-form")[0].reset();
+            $("#showServerInfoInPut").hide();
         }
 
         function initPop() {
+            if (!userInfo) return;
+            
             var domainHtml = '<label class="form-label">穿透域名</label><div class="radio-group">';
-            for (let a of Object.keys(userInfo.domains)) {
-                domainHtml += '<label class="radio-label">' +
-                    '<input type="radio" value="' + a + '" name="domain"> ' + a +
-                    '</label>';
+            if (userInfo.domains && Object.keys(userInfo.domains).length > 0) {
+                for (let a of Object.keys(userInfo.domains)) {
+                    domainHtml += '<label class="radio-label">' +
+                        '<input type="radio" value="' + a + '" name="domain"> ' + a +
+                        '</label>';
+                }
+            } else {
+                domainHtml += '<span class="text-xs text-secondary">暂无可用域名</span>';
             }
             domainHtml += '</div>';
             $("#domains").html(domainHtml);
 
-            var portsHtml = '<label class="form-label">外网端口号</label><div class="radio-group">' +
+            var portsHtml = '<label class="form-label">外网端口</label><div class="radio-group">' +
                 '<label class="radio-label">' +
-                '<input type="radio" value="0" name="port"> 随机端口' +
+                '<input type="radio" value="0" name="port" checked> 随机' +
                 '</label>';
-            for (let a of userInfo.ports) {
-                portsHtml += '<label class="radio-label">' +
-                    '<input type="radio" value="' + a + '" name="port"> ' + a +
-                    '</label>';
+            if (userInfo.ports && userInfo.ports.length > 0) {
+                for (let a of userInfo.ports) {
+                    portsHtml += '<label class="radio-label">' +
+                        '<input type="radio" value="' + a + '" name="port"> ' + a +
+                        '</label>';
+                }
             }
             portsHtml += '</div>';
             $("#ports").html(portsHtml);
 
             $.get(apiAddress + "/load/data", function(result) {
-                var serverData = result.code === 200 ? result.data : [];
-                var serverDataHtml = '<label class="form-label">穿透服务选择</label><div class="radio-group">';
+                var serverData = (result.code === 200 && result.data) ? result.data : [];
+                var serverDataHtml = '<label class="form-label">穿透服务</label><div class="radio-group">';
                 
                 for (let a of serverData) {
                     serverDataHtml += '<label class="radio-label">' +
                         '<input type="radio" value="' + a.ip + ':' + a.port + '" name="serverHost"> ' +
-                        a.name + ' (在线:' + a.num + ')' +
+                        a.name + '(' + (a.num || 0) + ')' +
                         '</label>';
                 }
                 serverDataHtml += '<label class="radio-label">' +
-                    '<input type="radio" value="-1" name="serverHost"> 自定义服务' +
+                    '<input type="radio" value="-1" name="serverHost"> 自定义' +
                     '</label></div>';
                 
                 $("#server_data").html(serverDataHtml);
@@ -266,43 +289,56 @@
                         $("#domains").show();
                     }
                 });
+            }).fail(function() {
+                $("#server_data").html('<div class="text-secondary">加载失败</div>');
             });
         }
 
         function loadConfigList() {
+            if (!userInfo || !userInfo.id) return;
+            
             $.get(apiAddress + "/config/list?userId=" + userInfo.id, function(result) {
                 var tabData = "";
-                for (let a of result.data) {
-                    tabData += '<tr>' +
-                        '<td>' + (a.deviceId.slice(0, 6) + '...' + a.deviceId.slice(-6)) + '</td>' +
-                        '<td>' + a.userHost + '</td>' +
-                        '<td>' + a.serverHost + '</td>' +
-                        '<td>' + a.type + '</td>' +
-                        '<td>' + a.domain + '</td>' +
-                        '<td>' + a.port + '</td>' +
-                        '<td>' +
-                        '<button class="btn btn-danger btn-sm" onclick="stop(\'' + a.id + '\')">' +
-                        '<i class="material-icons" style="font-size: 1.25rem;">delete</i> 删除' +
-                        '</button>' +
-                        '</td>' +
-                        '</tr>';
+                if (result.data && result.data.length > 0) {
+                    for (let a of result.data) {
+                        tabData += '<tr>' +
+                            '<td>' + (a.deviceId ? a.deviceId.slice(0, 4) + '...' : '-') + '</td>' +
+                            '<td>' + (a.userHost || '-') + '</td>' +
+                            '<td>' + (a.serverHost || '-') + '</td>' +
+                            '<td>' + (a.type || '-') + '</td>' +
+                            '<td>' + (a.domain || '-') + '</td>' +
+                            '<td>' + (a.port || '-') + '</td>' +
+                            '<td>' +
+                            '<button class="btn btn-danger btn-sm" onclick="stop(\'' + a.id + '\')">' +
+                            '<i class="material-icons" style="font-size: 1.25rem;">delete</i>' +
+                            '<span class="hide-mobile">删除</span>' +
+                            '</button>' +
+                            '</td>' +
+                            '</tr>';
+                    }
+                } else {
+                    tabData = '<tr><td colspan="7" style="text-align: center; padding: 2rem;">暂无数据</td></tr>';
                 }
-                $("#tabData").html(tabData || '<tr><td colspan="7" style="text-align: center; padding: 2rem;">暂无数据</td></tr>');
+                $("#tabData").html(tabData);
+            }).fail(function() {
+                $("#tabData").html('<tr><td colspan="7" style="text-align: center; padding: 2rem;">加载失败</td></tr>');
             });
         }
 
         function stop(id) {
-            if (confirm("确定要删除这个配置吗？")) {
+            if (confirm("确定删除？")) {
                 $.get(apiAddress + "/config/remove?id=" + id, function(result) {
-                    alert(result.msg);
+                    alert(result.msg || "操作成功");
                     loadConfigList();
+                }).fail(function() {
+                    alert("操作失败");
                 });
             }
         }
 
         $("#add_btn").click(function() {
             if (deviceId === "NO_ID") {
-                alert("不能获取到设备唯一ID，因此不能使用该功能");
+                alert("未设置设备ID，无法使用此功能");
                 return;
             }
 
@@ -311,11 +347,14 @@
             for (let a of serialize) {
                 if (a.name == 'serverHost' && a.value == '-1') {
                     a.value = $("#showServerInfoInPutVal").val();
+                    if (!a.value) {
+                        alert("请输入自定义服务地址");
+                        return;
+                    }
                 }
                 if (a.name == 'userHost') {
-                    var split = a.value.split(":");
-                    if (split.length == 1) {
-                        alert("必须填写端口，格式: ip:端口");
+                    if (!a.value || a.value.split(":").length < 2) {
+                        alert("格式错误，请使用 ip:端口");
                         return;
                     }
                 }
@@ -328,12 +367,14 @@
 
             $.post(apiAddress + "/config/save", serialize, function(result) {
                 if (result.code === 200) {
-                    alert(result.msg);
+                    alert(result.msg || "添加成功");
                     closeAddDialog();
                     loadConfigList();
                 } else {
-                    alert(result.msg);
+                    alert(result.msg || "操作失败");
                 }
+            }).fail(function() {
+                alert("网络错误");
             });
         });
     </script>

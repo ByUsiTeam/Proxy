@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="renderer" content="webkit">
     <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="format-detection" content="telephone=no">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="common/css/proxy-beauty.css">
     <script src="/api.js"></script>
@@ -17,22 +18,24 @@
             background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
             display: flex;
             flex-direction: column;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
         
         .login-header {
-            padding: 2rem;
+            padding: 1.5rem 1rem;
             text-align: center;
         }
         
         .login-header h1 {
             color: white;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 600;
         }
         
         .login-header p {
             color: rgba(255, 255, 255, 0.8);
-            margin-top: 0.5rem;
+            margin-top: 0.25rem;
+            font-size: 0.875rem;
         }
         
         .login-container {
@@ -40,7 +43,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 1rem;
         }
         
         .login-card {
@@ -65,6 +68,11 @@
             transition: var(--transition);
             font-weight: 500;
             color: var(--text-secondary);
+            font-size: 1rem;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .login-tab.active {
@@ -73,26 +81,41 @@
         }
         
         .login-form {
-            padding: 2rem;
+            padding: 1.5rem;
         }
         
         .form-footer {
             margin-top: 1.5rem;
             text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
         }
         
         .feature-section {
             background: var(--bg-card);
-            padding: 3rem 2rem;
+            padding: 2rem 1rem;
             border-top: 1px solid var(--border);
+        }
+        
+        .feature-section h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            font-size: 1.25rem;
         }
         
         .feature-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 2rem auto 0;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            max-width: 500px;
+            margin: 1rem auto 0;
+        }
+        
+        @media (min-width: 768px) {
+            .feature-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
         
         .feature-item {
@@ -100,40 +123,57 @@
         }
         
         .feature-item i {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: var(--primary-500);
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
         }
         
         .feature-item h3 {
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
+            color: var(--text-primary);
+            font-size: 0.875rem;
         }
         
         .feature-item p {
             color: var(--text-secondary);
-            font-size: 0.875rem;
+            font-size: 0.75rem;
         }
         
         .donation-section {
             background: var(--bg-body);
-            padding: 2rem;
+            padding: 1.5rem 1rem;
             text-align: center;
+        }
+        
+        .donation-section h3 {
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-size: 1rem;
         }
         
         .donation-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            max-width: 600px;
-            margin: 1.5rem auto 0;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 0.75rem;
+            max-width: 400px;
+            margin: 1rem auto 0;
         }
         
         .donation-item {
             background: var(--bg-card);
-            padding: 1rem;
+            padding: 0.75rem;
             border-radius: var(--radius-md);
             border: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+        
+        .donation-item div:first-child {
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
         
         .donation-amount {
@@ -145,15 +185,15 @@
 <body>
     <div class="login-page">
         <div class="login-header">
-            <h1>Proxy内网穿透</h1>
-            <p>简单、快速、免费的内网穿透服务</p>
+            <h1>Proxy</h1>
+            <p>简单快速的内网穿透</p>
         </div>
         
         <div class="login-container">
             <div class="login-card">
                 <div class="login-tabs">
                     <div class="login-tab active" onclick="showLogin()">登录</div>
-                    <div class="login-tab" onclick="showRegister()">注册/更新密码</div>
+                    <div class="login-tab" onclick="showRegister()">注册</div>
                 </div>
                 
                 <!-- 登录表单 -->
@@ -168,7 +208,7 @@
                         <input class="form-input" id="login_password" type="password" placeholder="请输入密码">
                     </div>
                     
-                    <button class="btn btn-primary" style="width: 100%;" id="login_btn">登录</button>
+                    <button class="btn btn-primary w-full" id="login_btn">登录</button>
                 </div>
                 
                 <!-- 注册表单 -->
@@ -186,60 +226,70 @@
                     <div class="form-group">
                         <label class="form-label">验证码</label>
                         <div style="display: flex; gap: 0.5rem;">
-                            <input class="form-input" id="reg_code" type="text" placeholder="请输入验证码" style="flex: 1;">
-                            <button class="btn btn-outline" id="send_email" type="button" style="white-space: nowrap;">发送验证码</button>
+                            <input class="form-input" id="reg_code" type="text" placeholder="验证码" style="flex: 1;">
+                            <button class="btn btn-outline" id="send_email" type="button" style="white-space: nowrap; min-width: 100px;">发送</button>
                         </div>
                     </div>
                     
-                    <button class="btn btn-primary" style="width: 100%;" id="reg_btn">注册/更新密码</button>
+                    <button class="btn btn-primary w-full" id="reg_btn">注册/更新密码</button>
                 </div>
                 
-                <div class="form-footer text-secondary">
+                <div class="form-footer">
                     永久免费 · 无需充值
                 </div>
             </div>
         </div>
         
         <div class="feature-section">
-            <h2 style="text-align: center; margin-bottom: 2rem;">为什么选择我们？</h2>
+            <h2>为什么选择我们？</h2>
             <div class="feature-grid">
                 <div class="feature-item">
                     <i class="material-icons">devices</i>
                     <h3>多端支持</h3>
-                    <p>Android、Win、Linux、Mac、NAS、Docker等环境</p>
+                    <p>全平台支持</p>
                 </div>
                 <div class="feature-item">
                     <i class="material-icons">language</i>
-                    <h3>二级域名赠送</h3>
-                    <p>注册账号即送二级域名，快速开发调试</p>
+                    <h3>二级域名</h3>
+                    <p>免费赠送</p>
                 </div>
                 <div class="feature-item">
                     <i class="material-icons">dns</i>
                     <h3>固定端口</h3>
-                    <p>支持动态端口与固定端口模式</p>
+                    <p>灵活配置</p>
                 </div>
                 <div class="feature-item">
                     <i class="material-icons">https</i>
-                    <h3>HTTPS支持</h3>
-                    <p>支持自定义域名SSL证书配置</p>
+                    <h3>HTTPS</h3>
+                    <p>安全加密</p>
                 </div>
             </div>
         </div>
         
         <div class="donation-section">
-            <h3 style="margin-bottom: 1rem;">最新捐赠者</h3>
+            <h3>最新捐赠</h3>
+            <div style="text-align: center">
+                <img height="300" src="img/pay.jpg"/>
+            </div>
             <div class="donation-grid" id="pay"></div>
         </div>
     </div>
 
     <script>
         $(function() {
-            var userInfo = localStorage.getItem("userInfo");
-            if (userInfo) {
+            if (localStorage.getItem("userInfo")) {
                 location.href = "center.html";
+                return;
             }
-            
             loadDonations();
+            
+            $("#login_btn").click(doLogin);
+            $("#reg_btn").click(doRegister);
+            $("#send_email").click(sendEmail);
+            
+            $("#login_password, #login_username").keypress(function(e) {
+                if(e.which == 13) doLogin();
+            });
         });
 
         function showLogin() {
@@ -256,71 +306,95 @@
             $("#registerForm").show();
         }
 
-        $("#login_btn").click(function() {
-            let val = $("#login_username").val();
-            let val1 = $("#login_password").val();
-            if (val && val1) {
-                $.post(apiAddress + "/user/login", {username: val, password: val1}, function(result) {
-                    if (result.code === 200) {
-                        localStorage.setItem("userInfo", JSON.stringify(result.data));
-                        if (result.data.level == 0) {
-                            localStorage.setItem("showPay", 0);
-                        }
-                        location.href = "center.html";
-                    } else {
-                        alert(result.msg);
-                    }
-                });
-            } else {
+        function doLogin() {
+            var username = $("#login_username").val().trim();
+            var password = $("#login_password").val().trim();
+            
+            if (!username || !password) {
                 alert("请输入邮箱和密码");
+                return;
             }
-        });
-
-        $("#send_email").click(function() {
-            let val = $("#reg_username").val();
-            if (val) {
-                $.get(apiAddress + "/user/email", {username: val}, function(result) {
-                    if (result.code === 200) {
-                        alert("发送成功，请查收邮件，留意垃圾邮箱");
-                    } else {
-                        alert(result.msg);
+            
+            $.post(apiAddress + "/user/login", {username: username, password: password}, function(result) {
+                if (result.code === 200) {
+                    localStorage.setItem("userInfo", JSON.stringify(result.data));
+                    if (result.data.level == 0) {
+                        localStorage.setItem("showPay", "0");
                     }
-                });
-            } else {
+                    location.href = "center.html";
+                } else {
+                    alert(result.msg || "登录失败");
+                }
+            }).fail(function() {
+                alert("网络错误");
+            });
+        }
+
+        function sendEmail() {
+            var username = $("#reg_username").val().trim();
+            if (!username) {
                 alert("请输入邮箱");
+                return;
             }
-        });
+            
+            var $btn = $("#send_email");
+            $btn.prop("disabled", true).text("发送中");
+            
+            $.get(apiAddress + "/user/email", {username: username}, function(result) {
+                if (result.code === 200) {
+                    alert("验证码已发送，请查收邮件");
+                } else {
+                    alert(result.msg || "发送失败");
+                }
+            }).fail(function() {
+                alert("网络错误");
+            }).always(function() {
+                setTimeout(function() {
+                    $btn.prop("disabled", false).text("发送");
+                }, 60000);
+            });
+        }
 
-        $("#reg_btn").click(function() {
-            let val = $("#reg_username").val();
-            let val1 = $("#reg_password").val();
-            let code = $("#reg_code").val();
-            if (val && val1 && code) {
-                $.post(apiAddress + "/user/reg", {username: val, password: val1, code: code}, function(result) {
-                    if (result.code === 200) {
-                        alert(result.msg);
-                        showLogin();
-                    } else {
-                        alert(result.msg);
-                    }
-                });
-            } else {
+        function doRegister() {
+            var username = $("#reg_username").val().trim();
+            var password = $("#reg_password").val().trim();
+            var code = $("#reg_code").val().trim();
+            
+            if (!username || !password || !code) {
                 alert("请填写完整信息");
+                return;
             }
-        });
+            
+            $.post(apiAddress + "/user/reg", {username: username, password: password, code: code}, function(result) {
+                if (result.code === 200) {
+                    alert("注册成功，请登录");
+                    showLogin();
+                    $("#login_username").val(username);
+                } else {
+                    alert(result.msg || "注册失败");
+                }
+            }).fail(function() {
+                alert("网络错误");
+            });
+        }
 
         function loadDonations() {
             $.get(apiAddress + "/server/pay", function(result) {
-                if (result.code !== 200) return;
+                if (result.code !== 200 || !result.data || result.data.length === 0) {
+                    $("#pay").html('<div class="donation-item">暂无捐赠</div>');
+                    return;
+                }
                 
-                var tabData = "";
-                for (let a of result.data) {
-                    tabData += '<div class="donation-item">' +
-                        '<div>' + a.username + '</div>' +
-                        '<div class="donation-amount">￥' + a.price + '</div>' +
+                var html = "";
+                for (let a of result.data.slice(0, 6)) {
+                    html += '<div class="donation-item">' +
+                        '<div>' + (a.username || '匿名') + '</div>' +
+                        '<div class="donation-amount">￥' + (a.price || '0') + '</div>' +
                         '</div>';
                 }
-                $("#pay").html(tabData || '<div class="donation-item">暂无捐赠记录</div>');
+                $("#pay").html(html);
+            }).fail(function() {
+                $("#pay").html('<div class="donation-item">加载失败</div>');
             });
         }
     </script>
