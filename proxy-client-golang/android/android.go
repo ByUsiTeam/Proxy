@@ -10,7 +10,7 @@ type simpleLogger struct{}
 
 func (s simpleLogger) Debugf(format string, args ...interface{}) {
     // Android 环境下可以通过 log.Println 输出
-    // android.Log.Printf(format, args...)
+    android.Log.Printf(format, args...)
 }
 func (s simpleLogger) Infof(format string, args ...interface{})  {}
 func (s simpleLogger) Warnf(format string, args ...interface{})  {}
