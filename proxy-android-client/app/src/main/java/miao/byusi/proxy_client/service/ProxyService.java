@@ -130,7 +130,7 @@ public class ProxyService extends Service {
             String device_id = SharedPreferencesUtil.getString(getApplicationContext(), "DEVICE_ID", UUID.randomUUID().toString().replace("-", ""));
             SharedPreferencesUtil.putString(getApplicationContext(),"DEVICE_ID",device_id);
             new Thread(()->{
-                Android.start("https://pro.cdifit.cn",10240L,"15.0", device_id);
+                Android.start("https://pro.cdifit.cn",10240,"15.0", device_id);
             }).start();
         } catch (Throwable e) {
         }
