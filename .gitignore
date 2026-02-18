@@ -12,10 +12,13 @@ node_modules
 target
 *.bak
 build/*
-*.jar
 go.sum
 proxy.zip
 /proxy-client-golang/build/*
 /proxy-client-golang/*.zip
 /.vscode
 /.choccy
+/proxy-android-client/.gradle/
+/proxy-android-client/.acside
+/proxy-android-client/.idea
+/proxy-android-client/build
