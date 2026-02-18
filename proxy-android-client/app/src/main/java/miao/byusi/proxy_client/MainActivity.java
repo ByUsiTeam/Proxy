@@ -39,6 +39,7 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebViewClient;
 
 import android.view.Menu;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import java.net.Inet4Address;
@@ -59,6 +60,14 @@ public class MainActivity extends AppCompatActivity {
     private com.tencent.smtt.sdk.WebView webView;
     private static final int LOCAL_PORT = 10240;
     private static final int SERVICE_START_DELAY = 2000;
+    
+    // 添加自动刷新相关变量
+    private int refreshCount = 0;
+    private static final int MAX_REFRESH_COUNT = 5;
+    private static final int REFRESH_DELAY = 3000; // 刷新延迟 3 秒
+    private Handler refreshHandler = new Handler();
+    private Runnable refreshRunnable;
+    private boolean isLoadingSuccess = false;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -123,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
         webView.setInitialScale(100);
         webView.requestFocus();
 
+        // 初始化刷新任务
+        initRefreshRunnable();
+
         // 设置 WebViewClient
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -141,12 +153,34 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(com.tencent.smtt.sdk.WebView view, String url) {
                 super.onPageFinished(view, url);
                 // 页面加载完成后的处理
+                isLoadingSuccess = true;
+                refreshCount = 0; // 重置刷新计数
+                refreshHandler.removeCallbacks(refreshRunnable); // 取消自动刷新
+                
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(MainActivity.this, "页面加载完成", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+
+            @Override
+            public void onReceivedError(com.tencent.smtt.sdk.WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+                // 页面加载失败，启动自动刷新
+                if (!isLoadingSuccess && failingUrl != null && failingUrl.contains(LOCAL_PORT + "")) {
+                    startAutoRefresh();
+                }
+            }
+
+            @Override
+            public void onReceivedHttpError(com.tencent.smtt.sdk.WebView view, com.tencent.smtt.export.external.interfaces.WebResourceRequest request, com.tencent.smtt.export.external.interfaces.WebResourceResponse errorResponse) {
+                super.onReceivedHttpError(view, request, errorResponse);
+                // HTTP 错误处理
+                if (!isLoadingSuccess && request.getUrl().toString().contains(LOCAL_PORT + "")) {
+                    startAutoRefresh();
+                }
             }
         });
 
@@ -160,6 +194,81 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 初始化自动刷新任务
+     */
+    private void initRefreshRunnable() {
+        refreshRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (refreshCount < MAX_REFRESH_COUNT) {
+                    refreshCount++;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, 
+                                "页面加载失败，正在自动刷新（" + refreshCount + "/" + MAX_REFRESH_COUNT + "）", 
+                                Toast.LENGTH_SHORT).show();
+                            
+                            // 重新加载当前页面
+                            if (webView != null) {
+                                webView.reload();
+                            }
+                        }
+                    });
+                } else {
+                    // 达到最大刷新次数，提示用户
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, 
+                                "页面加载失败，请检查网络或服务是否正常运行", 
+                                Toast.LENGTH_LONG).show();
+                            
+                            // 可选：显示对话框让用户手动重试
+                            showRetryDialog();
+                        }
+                    });
+                }
+            }
+        };
+    }
+
+    /**
+     * 启动自动刷新
+     */
+    private void startAutoRefresh() {
+        if (refreshCount < MAX_REFRESH_COUNT && !isLoadingSuccess) {
+            refreshHandler.removeCallbacks(refreshRunnable);
+            refreshHandler.postDelayed(refreshRunnable, REFRESH_DELAY);
+        }
+    }
+
+    /**
+     * 显示重试对话框
+     */
+    private void showRetryDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("加载失败")
+                .setMessage("页面加载失败，是否重试？")
+                .setPositiveButton("重试", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        refreshCount = 0; // 重置刷新计数
+                        isLoadingSuccess = false;
+                        loadLocalWebPage();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 
     /**
@@ -200,6 +309,11 @@ public class MainActivity extends AppCompatActivity {
         final String url = "http://" + localIp + ":" + LOCAL_PORT;
         android.util.Log.d("MainActivity", "Loading URL: " + url);
 
+        // 重置状态
+        isLoadingSuccess = false;
+        refreshCount = 0;
+        refreshHandler.removeCallbacks(refreshRunnable);
+
         // 先用 OkHttp 测试连接
         testConnectionWithOkHttp(localIp, new ConnectionCallback() {
             @Override
@@ -218,10 +332,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(MainActivity.this, 
-                            "服务连接失败，请检查服务是否已启动: " + error, 
-                            Toast.LENGTH_LONG).show();
+                            "服务连接失败，尝试通过 WebView 加载: " + error, 
+                            Toast.LENGTH_SHORT).show();
                         // 仍然尝试加载，可能 WebView 有不同的网络策略
                         webView.loadUrl(url);
+                        // 启动自动刷新机制
+                        startAutoRefresh();
                     }
                 });
             }
@@ -421,6 +537,17 @@ public class MainActivity extends AppCompatActivity {
             webView.goBack();
         } else {
             super.onBackPressed();
+        }
+    }
+
+    /**
+     * 销毁时移除回调，防止内存泄漏
+     */
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (refreshHandler != null) {
+            refreshHandler.removeCallbacks(refreshRunnable);
         }
     }
 
