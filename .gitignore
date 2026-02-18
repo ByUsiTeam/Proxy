@@ -18,3 +18,4 @@ proxy.zip
 /proxy-client-golang/*.zip
 /.vscode
 /.choccy
+.gradle/
