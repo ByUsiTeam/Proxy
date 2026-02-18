@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -47,6 +48,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.regex.Pattern;
 
 import miao.byusi.proxy_client.config.ConstConfig;
 import miao.byusi.proxy_client.service.ProxyService;
@@ -68,6 +70,10 @@ public class MainActivity extends AppCompatActivity {
     private Handler refreshHandler = new Handler();
     private Runnable refreshRunnable;
     private boolean isLoadingSuccess = false;
+    
+    // 本地服务地址的正则表达式
+    private static final String LOCAL_IP_PATTERN = 
+        "^http://(127\\.0\\.0\\.1|192\\.168\\.\\{1,3}\\.\\{1,3}|10\\.\\{1,3}\\.\\{1,3}\\.\\{1,3}|172\\.(1[6-9]|2[0-9]|3[0-1])\\.\\{1,3}\\.\\{1,3}):" + LOCAL_PORT + ".*$";
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -139,8 +145,16 @@ public class MainActivity extends AppCompatActivity {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView view, String url) {
-                view.loadUrl(url);
-                return true;
+                // 检查是否是本地服务地址
+                if (isLocalServiceUrl(url)) {
+                    // 本地服务地址，在 WebView 中加载
+                    view.loadUrl(url);
+                    return true;
+                } else {
+                    // 非本地服务地址，使用系统浏览器打开
+                    openInSystemBrowser(url);
+                    return true; // 返回 true 表示已经处理
+                }
             }
 
             @Override
@@ -169,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             public void onReceivedError(com.tencent.smtt.sdk.WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
                 // 页面加载失败，启动自动刷新
-                if (!isLoadingSuccess && failingUrl != null && failingUrl.contains(LOCAL_PORT + "")) {
+                if (!isLoadingSuccess && failingUrl != null && isLocalServiceUrl(failingUrl)) {
                     startAutoRefresh();
                 }
             }
@@ -178,7 +192,8 @@ public class MainActivity extends AppCompatActivity {
             public void onReceivedHttpError(com.tencent.smtt.sdk.WebView view, com.tencent.smtt.export.external.interfaces.WebResourceRequest request, com.tencent.smtt.export.external.interfaces.WebResourceResponse errorResponse) {
                 super.onReceivedHttpError(view, request, errorResponse);
                 // HTTP 错误处理
-                if (!isLoadingSuccess && request.getUrl().toString().contains(LOCAL_PORT + "")) {
+                if (!isLoadingSuccess && request.getUrl().toString() != null && 
+                    isLocalServiceUrl(request.getUrl().toString())) {
                     startAutoRefresh();
                 }
             }
@@ -194,6 +209,88 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 判断是否为本地服务地址
+     * @param url 要判断的URL
+     * @return 如果是本地服务地址返回true，否则返回false
+     */
+    private boolean isLocalServiceUrl(String url) {
+        if (url == null || url.isEmpty()) {
+            return false;
+        }
+        
+        try {
+            Uri uri = Uri.parse(url);
+            String host = uri.getHost();
+            int port = uri.getPort();
+            
+            // 检查端口是否为本地服务端口
+            if (port != LOCAL_PORT) {
+                return false;
+            }
+            
+            // 检查是否为本地IP地址
+            return isLocalIpAddress(host);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 判断是否为本地IP地址
+     * @param host 主机名或IP
+     * @return 如果是本地IP地址返回true，否则返回false
+     */
+    private boolean isLocalIpAddress(String host) {
+        if (host == null || host.isEmpty()) {
+            return false;
+        }
+        
+        // 检查是否为localhost
+        if ("localhost".equalsIgnoreCase(host) || "127.0.0.1".equals(host)) {
+            return true;
+        }
+        
+        // 检查是否为局域网IP
+        // 192.168.x.x
+        if (host.matches("^192\\.168\\.\\d{1,3}\\.\\d{1,3}$")) {
+            return true;
+        }
+        
+        // 10.x.x.x
+        if (host.matches("^10\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}$")) {
+            return true;
+        }
+        
+        // 172.16-31.x.x
+        if (host.matches("^172\\.(1[6-9]|2[0-9]|3[0-1])\\.\\d{1,3}\\.\\d{1,3}$")) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * 在系统浏览器中打开URL
+     * @param url 要打开的URL
+     */
+    private void openInSystemBrowser(String url) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            
+            // 可选：显示提示信息
+            Toast.makeText(this, "正在使用浏览器打开外部链接", Toast.LENGTH_SHORT).show();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "无法打开链接: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -534,7 +631,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (webView != null && webView.canGoBack()) {
-            webView.goBack();
+            // 检查上一个页面是否是本地服务地址
+            String currentUrl = webView.getUrl();
+            if (currentUrl != null && !isLocalServiceUrl(currentUrl)) {
+                // 如果当前页面不是本地服务地址，直接退出
+                super.onBackPressed();
+            } else {
+                webView.goBack();
+            }
         } else {
             super.onBackPressed();
         }
