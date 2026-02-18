@@ -2,196 +2,265 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="renderer" content="webkit">
-    <meta http-equiv="Cache-Control" content="no-siteapp"/>
-    <link rel="stylesheet" href="common/css/mdui.min.css"/>
-    <link rel="stylesheet" href="common/css/proxy-beauty.css"/>
-    <link rel="stylesheet" href="common/css/paging.css"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="common/css/proxy-beauty.css">
     <script src="/api.js"></script>
     <script src="common/js/jquery.min.js"></script>
-    <script src="common/js/paging.js"></script>
-    <script src="common/js/mdui.min.js"></script>
-    <title>Proxy内网穿透</title>
+    <title>域名管理 - Proxy内网穿透</title>
 </head>
-<body class="mdui-drawer-body-left mdui-appbar-with-toolbar  mdui-theme-primary-indigo mdui-theme-accent-pink mdui-theme-layout-auto">
-<header class="mdui-appbar mdui-appbar-fixed">
-    <div class="mdui-toolbar mdui-color-theme">
-        <span class="mdui-btn mdui-btn-icon mdui-ripple mdui-ripple-white"
-              mdui-drawer="{target: '#main-drawer', swipe: true}"><i class="mdui-icon material-icons">menu</i></span>
-        <a href="center.html" class="mdui-typo-headline mdui-hidden-xs">Proxy内网穿透</a>
-        <div class="mdui-toolbar-spacer"></div>
-        <div class=" mdui-btn mdui-btn-dense"><span>用户：<span id="username">***</span> 级别：<span
-                id="level">***</span> </span></div>
-        <div id="login_out" class=" mdui-btn mdui-btn-dense">退出</div>
-    </div>
-</header>
-<div class="mdui-drawer" id="main-drawer">
-    <div class="mdui-list" mdui-collapse="{accordion: true}" style="margin-bottom: 76px;">
-        <div class="mdui-collapse-item mdui-collapse-item-open">
-            <a class="mdui-collapse-item-header mdui-list-item mdui-ripple" href="center.html">
-                <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">near_me</i>
-                <div class="mdui-list-item-content">穿透服务</div>
+<body>
+    <header class="app-header">
+        <button class="menu-toggle" id="menuToggle">
+            <i class="material-icons">menu</i>
+        </button>
+        <a href="center.html" class="logo">Proxy<span>内网穿透</span></a>
+        <div class="header-spacer"></div>
+        <div class="user-info">
+            <span class="user-badge" id="userInfoDisplay">
+                <span id="username">***</span> · <span id="level">***</span>
+            </span>
+            <button class="logout-btn" id="login_out">退出</button>
+        </div>
+    </header>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+    <aside class="sidebar" id="sidebar">
+        <nav class="sidebar-nav">
+            <a href="center.html" class="nav-item">
+                <i class="material-icons">near_me</i>
+                <span>穿透服务</span>
             </a>
-            <a class="mdui-collapse-item mdui-collapse-item-open" href="port.html">
-                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-                    <i class="mdui-list-item-icon mdui-icon  material-icons mdui-text-color-purple">layers</i>
-                    <div class="mdui-list-item-content">端口管理</div>
+            <a href="port.html" class="nav-item">
+                <i class="material-icons">dns</i>
+                <span>端口管理</span>
+            </a>
+            <a href="domain.html" class="nav-item active">
+                <i class="material-icons">language</i>
+                <span>域名管理</span>
+            </a>
+            <a href="autoproxy.html" class="nav-item">
+                <i class="material-icons">autorenew</i>
+                <span>自动穿透</span>
+            </a>
+            <a href="log.html" class="nav-item">
+                <i class="material-icons">history</i>
+                <span>穿透日志</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main class="main-content" id="mainContent">
+        <div class="mb-4">
+            <button class="btn btn-primary" onclick="openAddDialog()">
+                <i class="material-icons" style="font-size: 1.25rem;">add</i>
+                添加域名
+            </button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">域名列表</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>二级域名</th>
+                                <th>自定义域名</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabData"></tbody>
+                    </table>
                 </div>
-            </a>
-            <a class="mdui-collapse-item mdui-collapse-item-open" href="./domain.html">
-                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-green">layers</i>
-                    <div class="mdui-list-item-content">域名管理</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 添加域名对话框 -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">添加域名</h3>
+                <button class="modal-close" onclick="closeAddDialog()">&times;</button>
+            </div>
+            <form id="domainForm">
+                <div class="modal-body">
+                    <input type="hidden" id="userInfo" name="userId">
+                    
+                    <div class="form-group">
+                        <label class="form-label">二级域名 <span class="text-secondary">(只允许字母数字)</span></label>
+                        <input class="form-input" id="domain" name="domain" placeholder="例如: myapp" type="text">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">自定义域名 <span class="text-secondary">(可选)</span></label>
+                        <input class="form-input" id="customDomain" name="customDomain" 
+                               placeholder="例如: www.example.com" type="text">
+                    </div>
                 </div>
-            </a>
-            <a class="mdui-collapse-item mdui-collapse-item-open" href="autoproxy.html">
-                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-                    <i class="mdui-list-item-icon mdui-icon  material-icons mdui-text-color-cyan-300">layers</i>
-                    <div class="mdui-list-item-content">自动穿透</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeAddDialog()">取消</button>
+                    <button type="button" class="btn btn-primary" id="add_btn">确定</button>
                 </div>
-            </a>
-            <a class="mdui-collapse-item mdui-collapse-item-open" href="log.html">
-                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
-                    <i class="mdui-list-item-icon mdui-icon material-icons mdui-text-color-blue">layers</i>
-                    <div class="mdui-list-item-content">穿透日志</div>
-                </div>
-            </a>
+            </form>
         </div>
     </div>
-</div>
 
-<script>
-    $(function () {
-        var userInfo = localStorage.getItem("userInfo")
-        if (!userInfo) {
-            location.href = "login.html";
-        } else {
-            userInfo = JSON.parse(userInfo)
-            $("#username").text(userInfo.username)
-            $("#level").text(userInfo.level)
-        }
-        $("#login_out").click(function () {
-            localStorage.removeItem("userInfo")
-            location.href = "login.html"
-        })
-    })
-</script>
+    <script>
+        // 全局变量
+        var userInfo = null;
 
-<div style="padding: 1rem">
-
-    <div style="padding: .6rem">
-        <button class="mdui-btn mdui-btn-raised mdui-btn-dense mdui-color-deep-purple-accent mdui-ripple"
-                onclick="new mdui.Dialog('#addUser').open()">
-            添加域名
-        </button>
-    </div>
-
-    <div class="mdui-table-fluid">
-        <table class="mdui-table">
-            <thead>
-            <tr>
-                <th>二级名</th>
-                <th>自定义域名</th>
-                <th>操作</th>
-            </tr>
-            </thead>
-            <tbody id="tabData">
-
-            </tbody>
-        </table>
-    </div>
-
-    <div class="mdui-dialog" id="addUser">
-        <form>
-            <div class="mdui-dialog-content">
-                <input class="mdui-textfield-input" id="userInfo" name="userId" placeholder="username" type="hidden"/>
-                <div class="mdui-textfield">
-                    <label class="mdui-textfield-label">二级域名</label>
-                    <input class="mdui-textfield-input " id="domain" name="domain" placeholder="二级域名(只是一个名字)" type="text"/>
-                </div>
-                <div class="mdui-textfield">
-                    <label class="mdui-textfield-label">自定义域名</label>
-                    <input class="mdui-textfield-input " id="customDomain" name="customDomain" placeholder="自定义域名(如:www.heixiaoma.com),非必填" type="text"/>
-                </div>
-            </div>
-            <div class="mdui-dialog-actions">
-                <div class="mdui-btn mdui-ripple" mdui-dialog-cancel>取消</div>
-                <div id="add_btn" class="mdui-btn mdui-ripple">确定</div>
-            </div>
-        </form>
-    </div>
-</div>
-
-
-<script>
-    var userInfo = localStorage.getItem("userInfo")
-    if (userInfo) {
-        userInfo = JSON.parse(userInfo)
-        function stop(userId,domain) {
-            $.post(apiAddress+"/server/domainRemove",{userId:userId,domain:domain}, function (result) {
-                alert(result.msg)
-                reload()
-            });
-        }
-        console.log(userInfo)
-        $("#userInfo").val(userInfo.id)
-        var tabData = ""
-        $.get(apiAddress+"/server/domainList?userId="+userInfo.id, function (result) {
-            for (let a of result.data) {
-                tabData += "  <tr>\n" +
-                    "                <td>" + a.domain + "</td>\n" +
-                    "                <td>" + a.customDomain + "</td>\n" +
-                    "                <td>\n" +
-                    "                    <button class=\"mdui-btn mdui-btn-raised mdui-btn-dense mdui-color-deep-orange-accent mdui-ripple\"\n" +
-                    "                    onclick=\"stop('"+userInfo.id+"','"+a.domain+"')\">\n" +
-                    "                        删除\n" +
-                    "                    </button>\n" +
-                    "                </td>\n" +
-                    "            </tr>"
+        $(function() {
+            // 检查登录状态
+            var storedUserInfo = localStorage.getItem("userInfo");
+            if (!storedUserInfo) {
+                location.href = "login.html";
+                return;
             }
-            $("#tabData").html(
-                tabData
-            )
-        });
-    }
+            
+            userInfo = JSON.parse(storedUserInfo);
+            $("#username").text(userInfo.username || "***");
+            $("#level").text(userInfo.level || "***");
+            $("#userInfo").val(userInfo.id || "");
+            
+            // 退出登录
+            $("#login_out").click(function() {
+                localStorage.removeItem("userInfo");
+                location.href = "login.html";
+            });
 
-    $("#add_btn").click(function () {
-        let val = $("#userInfo").val();
-        let val1 = $("#domain").val();
-        let val2 = $("#customDomain").val();
-        if (val && val1) {
-            $.post(apiAddress+"/server/domainAdd", {userId: val, domain: val1,customDomain:val2}, function (result) {
-                if (result.code === 200) {
-                    alert(result.msg)
-                    reload()
+            // 侧边栏控制
+            $("#menuToggle").click(function() {
+                $("#sidebar").toggleClass("open");
+                $("#sidebarOverlay").toggleClass("active");
+            });
+
+            $("#sidebarOverlay").click(function() {
+                $("#sidebar").removeClass("open");
+                $("#sidebarOverlay").removeClass("active");
+            });
+
+            // 加载域名列表
+            loadDomainList();
+        });
+
+        function openAddDialog() {
+            $("#addModal").addClass("open");
+        }
+
+        function closeAddDialog() {
+            $("#addModal").removeClass("open");
+            $("#domain").val("");
+            $("#customDomain").val("");
+        }
+
+        function loadDomainList() {
+            if (!userInfo || !userInfo.id) return;
+            
+            $.get(apiAddress + "/server/domainList?userId=" + userInfo.id, function(result) {
+                var tabData = "";
+                if (result.code === 200 && result.data && result.data.length > 0) {
+                    for (let a of result.data) {
+                        tabData += '<tr>' +
+                            '<td>' + (a.domain || '-') + '</td>' +
+                            '<td>' + (a.customDomain || '-') + '</td>' +
+                            '<td>' +
+                            '<button class="btn btn-danger btn-sm" onclick="deleteDomain(\'' + (a.domain || '') + '\')">' +
+                            '<i class="material-icons" style="font-size: 1.25rem;">delete</i> 删除' +
+                            '</button>' +
+                            '</td>' +
+                            '</tr>';
+                    }
                 } else {
-                    alert(result.msg)
+                    tabData = '<tr><td colspan="3" style="text-align: center; padding: 2rem;">暂无数据</td></tr>';
                 }
+                $("#tabData").html(tabData);
+            }).fail(function() {
+                $("#tabData").html('<tr><td colspan="3" style="text-align: center; padding: 2rem;">加载失败</td></tr>');
             });
         }
-    })
 
-
-    /**
-     * 刷新
-     */
-    function reload(){
-        $.post(apiAddress+"/user/login", {username: userInfo.username, password: userInfo.password}, function (result) {
-            if (result.code === 200) {
-                localStorage.setItem("userInfo", JSON.stringify(result.data))
-                location.reload()
-            } else {
-                $("#closeLogin").click()
-                mdui.alert(result.msg);
+        function deleteDomain(domain) {
+            if (!domain) {
+                alert("无效的域名");
+                return;
             }
+            if (confirm("确定要删除这个域名吗？")) {
+                $.post(apiAddress + "/server/domainRemove", {
+                    userId: userInfo.id, 
+                    domain: domain
+                }, function(result) {
+                    alert(result.msg || "操作成功");
+                    reloadUserInfo();
+                }).fail(function() {
+                    alert("操作失败");
+                });
+            }
+        }
+
+        $("#add_btn").click(function() {
+            var userId = $("#userInfo").val();
+            var domain = $("#domain").val().trim();
+            var customDomain = $("#customDomain").val().trim();
+            
+            if (!userId) {
+                alert("用户信息错误");
+                return;
+            }
+            
+            if (!domain) {
+                alert("请输入二级域名");
+                return;
+            }
+            
+            // 验证域名格式
+            if (!/^[a-zA-Z0-9]+$/.test(domain)) {
+                alert("二级域名只能包含字母和数字");
+                return;
+            }
+            
+            $.post(apiAddress + "/server/domainAdd", {
+                userId: userId, 
+                domain: domain, 
+                customDomain: customDomain || ""
+            }, function(result) {
+                if (result.code === 200) {
+                    alert(result.msg || "添加成功");
+                    closeAddDialog();
+                    reloadUserInfo();
+                } else {
+                    alert(result.msg || "添加失败");
+                }
+            }).fail(function() {
+                alert("网络错误");
+            });
         });
-    }
 
-
-</script>
-
+        function reloadUserInfo() {
+            if (!userInfo) return;
+            
+            $.post(apiAddress + "/user/login", {
+                username: userInfo.username, 
+                password: userInfo.password
+            }, function(result) {
+                if (result.code === 200) {
+                    localStorage.setItem("userInfo", JSON.stringify(result.data));
+                    userInfo = result.data;
+                    loadDomainList();
+                } else {
+                    alert(result.msg || "刷新失败");
+                }
+            }).fail(function() {
+                alert("网络错误");
+            });
+        }
+    </script>
 </body>
 </html>
