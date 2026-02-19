@@ -49,7 +49,8 @@
 ## 云后台管理web
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/img_3.png" width="500" />
 
-### 安卓客服端（暂不支持）
+### 安卓客服端
+- [![ByUsi/Proxy-Client](https://gitee.com/byusi/proxy-client/widgets/widget_card.svg?colors=4183c4,ffffff,ffffff,e3e9ed,666666,9b9b9b)](https://gitee.com/byusi/proxy-client)
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/d.jpg" width="500" />
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/e.jpg" width="500" />
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/f.jpg" width="500" />
