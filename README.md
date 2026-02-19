@@ -56,5 +56,5 @@
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/f.jpg" width="500" />
 
 ### Golang客服端
-- 为了跨平台我们提供golang的实现
+为了跨平台我们提供golang的实现
 <img src="https://gitee.com/byusi/proxy/raw/master/doc/Screenshot_20250422032415.png" width="500" />
