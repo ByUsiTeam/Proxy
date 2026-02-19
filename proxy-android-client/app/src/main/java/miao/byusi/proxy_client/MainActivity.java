@@ -48,7 +48,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.util.regex.Pattern;
 
 import miao.byusi.proxy_client.config.ConstConfig;
 import miao.byusi.proxy_client.service.ProxyService;
@@ -71,9 +70,10 @@ public class MainActivity extends AppCompatActivity {
     private Runnable refreshRunnable;
     private boolean isLoadingSuccess = false;
     
-    // 本地服务地址的正则表达式
-    private static final String LOCAL_IP_PATTERN = 
-        "^http://(127\\.0\\.0\\.1|192\\.168\\.\\{1,3}\\.\\{1,3}|10\\.\\{1,3}\\.\\{1,3}\\.\\{1,3}|172\\.(1[6-9]|2[0-9]|3[0-1])\\.\\{1,3}\\.\\{1,3}):" + LOCAL_PORT + ".*$";
+    // 连接拒绝重试相关变量
+    private int connectionRefusedRetryCount = 0;
+    private static final int MAX_CONNECTION_REFUSED_RETRY = 10;
+    private static final int CONNECTION_REFUSED_RETRY_DELAY = 2000; // 2秒
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -143,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
 
         // 设置 WebViewClient
         webView.setWebViewClient(new WebViewClient() {
+            private boolean isErrorPage = false;
+            
             @Override
             public boolean shouldOverrideUrlLoading(com.tencent.smtt.sdk.WebView view, String url) {
                 // 检查是否是本地服务地址
@@ -153,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // 非本地服务地址，使用系统浏览器打开
                     openInSystemBrowser(url);
-                    return true; // 返回 true 表示已经处理
+                    return true;
                 }
             }
 
@@ -164,38 +166,170 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onPageStarted(com.tencent.smtt.sdk.WebView view, String url, android.graphics.Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                // 页面开始加载，重置错误状态
+                isErrorPage = false;
+            }
+
+            @Override
             public void onPageFinished(com.tencent.smtt.sdk.WebView view, String url) {
                 super.onPageFinished(view, url);
-                // 页面加载完成后的处理
-                isLoadingSuccess = true;
-                refreshCount = 0; // 重置刷新计数
-                refreshHandler.removeCallbacks(refreshRunnable); // 取消自动刷新
                 
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, "页面加载完成", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                if (!isErrorPage) {
+                    // 页面加载成功
+                    isLoadingSuccess = true;
+                    connectionRefusedRetryCount = 0; // 重置连接拒绝重试计数
+                    refreshCount = 0; // 重置刷新计数
+                    refreshHandler.removeCallbacks(refreshRunnable); // 取消自动刷新
+                    
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(MainActivity.this, "页面加载成功", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
             }
 
             @Override
             public void onReceivedError(com.tencent.smtt.sdk.WebView view, int errorCode, String description, String failingUrl) {
                 super.onReceivedError(view, errorCode, description, failingUrl);
-                // 页面加载失败，启动自动刷新
-                if (!isLoadingSuccess && failingUrl != null && isLocalServiceUrl(failingUrl)) {
-                    startAutoRefresh();
+                
+                // 处理错误
+                isErrorPage = true;
+                
+                // 检查是否是本地服务地址
+                if (failingUrl != null && isLocalServiceUrl(failingUrl)) {
+                    // 处理连接拒绝错误
+                    if (description != null && description.contains("ERR_CONNECTION_REFUSED")) {
+                        handleConnectionRefused(view, failingUrl);
+                    } else {
+                        // 其他错误，启动自动刷新
+                        if (!isLoadingSuccess) {
+                            startAutoRefresh();
+                        }
+                    }
                 }
             }
 
             @Override
             public void onReceivedHttpError(com.tencent.smtt.sdk.WebView view, com.tencent.smtt.export.external.interfaces.WebResourceRequest request, com.tencent.smtt.export.external.interfaces.WebResourceResponse errorResponse) {
                 super.onReceivedHttpError(view, request, errorResponse);
+                
                 // HTTP 错误处理
-                if (!isLoadingSuccess && request.getUrl().toString() != null && 
-                    isLocalServiceUrl(request.getUrl().toString())) {
+                String url = request.getUrl().toString();
+                if (!isLoadingSuccess && url != null && isLocalServiceUrl(url)) {
+                    isErrorPage = true;
                     startAutoRefresh();
                 }
+            }
+
+            /**
+             * 处理连接拒绝错误
+             */
+            private void handleConnectionRefused(final com.tencent.smtt.sdk.WebView view, final String url) {
+                if (connectionRefusedRetryCount < MAX_CONNECTION_REFUSED_RETRY) {
+                    connectionRefusedRetryCount++;
+                    
+                    final int currentRetry = connectionRefusedRetryCount;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String message = String.format("连接被拒绝，正在重试 (%d/%d)...", 
+                                currentRetry, MAX_CONNECTION_REFUSED_RETRY);
+                            Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show();
+                            
+                            // 延迟后重新加载
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // 检查服务是否已启动
+                                    checkServiceAndReload(view, url);
+                                }
+                            }, CONNECTION_REFUSED_RETRY_DELAY);
+                        }
+                    });
+                } else {
+                    // 达到最大重试次数，提示用户
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            showConnectionRefusedDialog(url);
+                        }
+                    });
+                }
+            }
+
+            /**
+             * 检查服务状态并重新加载
+             */
+            private void checkServiceAndReload(final com.tencent.smtt.sdk.WebView view, final String url) {
+                // 先尝试通过 OkHttp 测试连接
+                try {
+                    String host = Uri.parse(url).getHost();
+                    testConnectionWithOkHttp(host, new ConnectionCallback() {
+                        @Override
+                        public void onSuccess() {
+                            // 服务已就绪，加载页面
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    view.loadUrl(url);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onFailure(String error) {
+                            // 服务仍未就绪，继续重试
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // 继续重试
+                                    handleConnectionRefused(view, url);
+                                }
+                            });
+                        }
+                    });
+                } catch (Exception e) {
+                    // 出现异常，继续重试
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            handleConnectionRefused(view, url);
+                        }
+                    });
+                }
+            }
+
+            /**
+             * 显示连接拒绝对话框
+             */
+            private void showConnectionRefusedDialog(final String url) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("连接失败")
+                        .setMessage("无法连接到本地服务，请确保服务已启动\n\n" +
+                                   "可能的原因：\n" +
+                                   "1. 服务尚未启动完成\n" +
+                                   "2. 服务端口被占用\n" +
+                                   "3. 防火墙阻止了连接\n\n" +
+                                   "是否继续重试？")
+                        .setPositiveButton("继续重试", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                connectionRefusedRetryCount = 0; // 重置重试计数
+                                handleConnectionRefused(webView, url);
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
             }
         });
 
@@ -324,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
                                 "页面加载失败，请检查网络或服务是否正常运行", 
                                 Toast.LENGTH_LONG).show();
                             
-                            // 可选：显示对话框让用户手动重试
+                            // 显示对话框让用户手动重试
                             showRetryDialog();
                         }
                     });
@@ -409,34 +543,22 @@ public class MainActivity extends AppCompatActivity {
         // 重置状态
         isLoadingSuccess = false;
         refreshCount = 0;
+        connectionRefusedRetryCount = 0;
         refreshHandler.removeCallbacks(refreshRunnable);
 
-        // 先用 OkHttp 测试连接
-        testConnectionWithOkHttp(localIp, new ConnectionCallback() {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onSuccess() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        webView.loadUrl(url);
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(String error) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(MainActivity.this, 
-                            "服务连接失败，尝试通过 WebView 加载: " + error, 
-                            Toast.LENGTH_SHORT).show();
-                        // 仍然尝试加载，可能 WebView 有不同的网络策略
-                        webView.loadUrl(url);
-                        // 启动自动刷新机制
-                        startAutoRefresh();
-                    }
-                });
+            public void run() {
+                // 显示提示信息
+                Toast.makeText(MainActivity.this, 
+                    "正在加载页面...", 
+                    Toast.LENGTH_SHORT).show();
+                
+                // 直接加载URL
+                webView.loadUrl(url);
+                
+                // 启动自动刷新机制
+                startAutoRefresh();
             }
         });
     }
@@ -478,14 +600,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * 连接回调接口
-     */
-    private interface ConnectionCallback {
-        void onSuccess();
-        void onFailure(String error);
-    }
-
-    /**
      * 用 OkHttp 测试本地服务连接
      */
     private void testConnectionWithOkHttp(String ip, ConnectionCallback callback) {
@@ -496,12 +610,13 @@ public class MainActivity extends AppCompatActivity {
                 okhttp3.Response response = null;
                 try {
                     client = new okhttp3.OkHttpClient.Builder()
-                            .connectTimeout(3, java.util.concurrent.TimeUnit.SECONDS)
+                            .connectTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
+                            .readTimeout(1, java.util.concurrent.TimeUnit.SECONDS)
                             .build();
 
                     okhttp3.Request request = new okhttp3.Request.Builder()
                             .url("http://" + ip + ":" + LOCAL_PORT)
-                            .head() // 使用 HEAD 请求减少数据传输
+                            .head()
                             .build();
 
                     response = client.newCall(request).execute();
@@ -511,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
                         callback.onFailure("HTTP " + response.code());
                     }
                 } catch (java.net.ConnectException e) {
-                    callback.onFailure("连接被拒绝，请确保服务已启动");
+                    callback.onFailure("连接被拒绝");
                 } catch (java.net.SocketTimeoutException e) {
                     callback.onFailure("连接超时");
                 } catch (Exception e) {
@@ -523,6 +638,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    /**
+     * 连接回调接口
+     */
+    private interface ConnectionCallback {
+        void onSuccess();
+        void onFailure(String error);
     }
 
     /**
