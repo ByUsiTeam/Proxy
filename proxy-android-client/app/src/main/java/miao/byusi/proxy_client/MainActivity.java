@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     // 添加自动刷新相关变量
     private int refreshCount = 0;
     private static final int MAX_REFRESH_COUNT = 5;
-    private static final int REFRESH_DELAY = 3000; // 刷新延迟 3 秒
+    private static final int REFRESH_DELAY = 4000; // 刷新延迟 4 秒
     private Handler refreshHandler = new Handler();
     private Runnable refreshRunnable;
     private boolean isLoadingSuccess = false;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     // 连接拒绝重试相关变量
     private int connectionRefusedRetryCount = 0;
     private static final int MAX_CONNECTION_REFUSED_RETRY = 10;
-    private static final int CONNECTION_REFUSED_RETRY_DELAY = 2000; // 2秒
+    private static final int CONNECTION_REFUSED_RETRY_DELAY = 1000; // 1秒
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
