@@ -16,9 +16,11 @@ apt update && apt upgrade -y
 
 ### 2. 安装依赖  
 ```bash  
-apt install git openjdk-17-jdk maven golang -y  
+apt install git openjdk-25-jdk maven golang -y  
 ```  
 > **报错处理**：复制完整日志求助AI工具，保持耐心  
+
+> **注意**：Java版本需25+，如系统无openjdk-25，可安装openjdk-21或更高版本  
 
 ---
 
@@ -49,12 +51,47 @@ nano proxy-server/src/main/resources/app.properties
 nano proxy-proxy/src/main/resources/app.properties  
 ```  
 
-### 3. 客户端API地址  
+### 3. SSL证书配置（可选）
+节点端支持自定义SSL证书，用于HTTPS加密连接：
+```bash  
+nano proxy-proxy/src/main/resources/app.properties  
+```  
+**SSL配置项**：
+```properties
+# 是否启用自定义SSL证书
+ssl.enabled=false
+# 密钥库路径（支持JKS、P12格式）
+ssl.keyStore=/path/to/keystore.jks
+# 密钥库密码
+ssl.keyStorePassword=your_password
+# 密钥管理器密码（默认与密钥库密码相同）
+ssl.keyManagerPassword=your_password
+# 密钥库类型（JKS、P12等）
+ssl.keyStoreType=JKS
+# SSL协议（TLS、TLSv1.2、TLSv1.3）
+ssl.protocol=TLS
+```
+
+### 4. Golang客户端SSL配置（可选）
+客户端支持SSL/TLS加密连接，可通过命令行参数或环境变量配置：
+```bash  
+# 命令行参数方式
+./proxy-client -ssl -sslCert /path/to/cert.pem -sslKey /path/to/key.pem -sslCA /path/to/ca.pem
+
+# 环境变量方式
+export SSL_ENABLED=true
+export SSL_CERT_FILE=/path/to/cert.pem
+export SSL_KEY_FILE=/path/to/key.pem
+export SSL_CA_FILE=/path/to/ca.pem
+export SSL_SERVER_NAME=your.server.com
+``  
+
+### 5. 客户端API地址  
 ```bash  
 nano proxy-client-golang/main.go  
 ```  
 > **关键修改**：  
-> 将第89行 `web.InitCloudDevice("http://proxy.byusi.cn:9090", deviceId, logLevel)`  
+> 将对应行 `web.InitCloudDevice("http://proxy.byusi.cn:9090", deviceId, logLevel)`  
 > 中的URL替换为你的服务器地址  
 
 ---
