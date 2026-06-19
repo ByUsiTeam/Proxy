@@ -32,8 +32,7 @@ public abstract class HpCommonHandler extends SimpleChannelInboundHandler<HpMess
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         if (!(cause instanceof IOException)){
-            cause.printStackTrace();
-            log.error("HP通道 {}......\n{}",cause.getMessage(), ExceptionUtil.getMessage(cause));
+            log.error("HP通道异常", cause);
         }
         ctx.close();
     }
@@ -44,7 +43,7 @@ public abstract class HpCommonHandler extends SimpleChannelInboundHandler<HpMess
             IdleStateEvent e = (IdleStateEvent) evt;
             //如果数据堆积情况，不能关闭连接，
             if (e.state() == IdleState.READER_IDLE&&ctx.channel().isWritable()) {
-                System.out.println("Read idle loss connection.");
+                log.warn("Read idle loss connection.");
                 ctx.close();
             } else if (e.state() == IdleState.WRITER_IDLE) {
                 HpMessageData.HpMessage keepMessage = HpMessageData.HpMessage.newBuilder().setType(HpMessageData.HpMessage.HpMessageType.KEEPALIVE).build();

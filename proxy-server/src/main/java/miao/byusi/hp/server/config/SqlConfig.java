@@ -9,6 +9,8 @@ import org.beetl.sql.ext.DBInitHelper;
 import org.beetl.sql.ext.DebugInterceptor;
 import cn.hserver.core.ioc.annotation.Bean;
 import cn.hserver.core.ioc.annotation.Configuration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
@@ -18,6 +20,7 @@ import java.io.InputStream;
  */
 @Configuration
 public class SqlConfig {
+    private static final Logger log = LoggerFactory.getLogger(SqlConfig.class);
 
     @Bean
     public SQLManager sql()  {
@@ -46,7 +49,7 @@ public class SqlConfig {
             }
             return sqlManager;
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("数据库初始化失败", e);
         }
         return null;
     }

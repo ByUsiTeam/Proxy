@@ -131,8 +131,7 @@ public class HpServerHandler extends HpCommonHandler {
                 System.out.println("停止服务器的端口: " + collect);
             }
         } catch (Throwable e) {
-            e.printStackTrace();
-            log.error(e.getMessage() + "-->" + ctx.channel().remoteAddress(), e);
+            log.error("通道关闭异常: {} --> {}", e.getMessage(), ctx.channel().remoteAddress(), e);
         }
         remoteConnectionServer.close();
 
@@ -187,12 +186,12 @@ public class HpServerHandler extends HpCommonHandler {
                 register = true;
                 CURRENT_STATUS.add(new ConnectInfo(tempPort, username, domain, login.getDomains().get(domain), ctx.channel()));
                 metaDataBuild.setReason("连接成功，外网TCP地址是:" + IocUtil.getBean(WebConfig.class).getHost() + ":" + tempPort + ",外网HTTP地址是：http://" + domain + "." + host + " " + (login.getTips().trim().length() > 0 ? "公告提示：" + login.getTips() : ""));
-                System.out.println("注册成功，外网地址是:  " + host + ":" + tempPort);
-                System.out.println("用户名：" + username + " 域名：" + domain + " 来源IP：" + ctx.channel().remoteAddress());
+                log.info("注册成功，外网地址是: {}:{}", host, tempPort);
+                log.info("用户名：{} 域名：{} 来源IP：{}", username, domain, ctx.channel().remoteAddress());
             } catch (Exception e) {
                 metaDataBuild.setSuccess(false);
                 metaDataBuild.setReason(e.getMessage());
-                e.printStackTrace();
+                log.error("TCP注册异常", e);
             }
         }
         HpMessageData.HpMessage.Builder sendBackMessageBuilder = HpMessageData.HpMessage.newBuilder();
@@ -201,7 +200,7 @@ public class HpServerHandler extends HpCommonHandler {
         sendBackMessageBuilder.setMetaData(metaData);
         ctx.writeAndFlush(sendBackMessageBuilder.build());
         if (!register) {
-            System.out.println("客户注册错误: " + metaData.getReason());
+            log.warn("客户注册错误: {}", metaData.getReason());
             ctx.close();
         }
     }
@@ -256,7 +255,7 @@ public class HpServerHandler extends HpCommonHandler {
             } catch (Exception e) {
                 metaDataBuild.setSuccess(false);
                 metaDataBuild.setReason(e.getMessage());
-                e.printStackTrace();
+                log.error("UDP注册异常", e);
             }
         }
         HpMessageData.HpMessage.Builder sendBackMessageBuilder = HpMessageData.HpMessage.newBuilder();

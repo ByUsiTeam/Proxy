@@ -1,6 +1,8 @@
 package miao.byusi.hp.common.handler;
 
 import miao.byusi.hp.common.message.Photo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +11,8 @@ import java.util.List;
  * @author hxm
  */
 public class PhotoJpgMessageHandler extends PhotoMessageHandler {
+    private static final Logger log = LoggerFactory.getLogger(PhotoJpgMessageHandler.class);
+
     private final String username;
     private final String domain;
 
@@ -139,7 +143,7 @@ public class PhotoJpgMessageHandler extends PhotoMessageHandler {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("JPG图片处理异常", e);
             return false;
         }
         return true;

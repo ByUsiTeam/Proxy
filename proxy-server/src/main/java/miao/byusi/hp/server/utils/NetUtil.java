@@ -1,5 +1,8 @@
 package miao.byusi.hp.server.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -7,6 +10,8 @@ import java.net.ServerSocket;
  * @author hxm
  */
 public class NetUtil {
+    private static final Logger log = LoggerFactory.getLogger(NetUtil.class);
+
     /**
      * 获取一个可用的端口
      *
@@ -23,7 +28,7 @@ public class NetUtil {
                 try {
                     serverSocket.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("关闭端口检测Socket失败", e);
                 }
             }
         }

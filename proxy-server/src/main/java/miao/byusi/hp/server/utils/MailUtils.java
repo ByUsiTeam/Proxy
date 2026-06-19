@@ -1,6 +1,8 @@
 package miao.byusi.hp.server.utils;
 
 import cn.hserver.core.server.util.PropUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -14,6 +16,8 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class MailUtils {
+    private static final Logger log = LoggerFactory.getLogger(MailUtils.class);
+
     // 缓存邮件配置
     private static final Properties SMTP_PROPS = initSmtpProps();
     private static final Authenticator AUTHENTICATOR = initAuthenticator();
@@ -101,11 +105,11 @@ public class MailUtils {
     }
 
     private static void handleMailException(Exception e) {
-        System.err.println("邮件发送失败: " + e.getMessage());
+        log.error("邮件发送失败: {}", e.getMessage());
         if (e instanceof AuthenticationFailedException) {
-            System.err.println("认证失败，请检查：\n1. 用户名/密码是否正确\n2. 是否开启SMTP服务\n3. 是否使用授权码");
+            log.error("认证失败，请检查：1. 用户名/密码是否正确 2. 是否开启SMTP服务 3. 是否使用授权码");
         } else if (e.getMessage().contains("Could not connect to SMTP host")) {
-            System.err.println("连接失败，请检查：\n1. 网络状态\n2. SMTP主机/端口配置\n3. 防火墙设置");
+            log.error("连接失败，请检查：1. 网络状态 2. SMTP主机/端口配置 3. 防火墙设置");
         }
     }
 

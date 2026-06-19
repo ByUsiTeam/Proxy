@@ -1,6 +1,7 @@
 package tcp
 
 import (
+	"crypto/tls"
 	"proxy-client-golang/hpMessage"
 	"net"
 
@@ -14,6 +15,7 @@ type HpClient struct {
 	serverPort    int
 	isKill        bool
 	handler       *HpClientHandler
+	tlsConfig     *tls.Config
 }
 
 func NewHpClient(callMsg func(message string)) *HpClient {
@@ -23,6 +25,14 @@ func NewHpClient(callMsg func(message string)) *HpClient {
 }
 
 func (hpClient *HpClient) Connect(messageType hpMessage.HpMessage_MessageType, serverAddress string, serverPort int, username string, password string, domain string, remotePort int, proxyAddress string, proxyPort int) {
+	hpClient.connectWithTLS(messageType, serverAddress, serverPort, username, password, domain, remotePort, proxyAddress, proxyPort, nil)
+}
+
+func (hpClient *HpClient) ConnectWithTLS(messageType hpMessage.HpMessage_MessageType, serverAddress string, serverPort int, username string, password string, domain string, remotePort int, proxyAddress string, proxyPort int, tlsConfig *tls.Config) {
+	hpClient.connectWithTLS(messageType, serverAddress, serverPort, username, password, domain, remotePort, proxyAddress, proxyPort, tlsConfig)
+}
+
+func (hpClient *HpClient) connectWithTLS(messageType hpMessage.HpMessage_MessageType, serverAddress string, serverPort int, username string, password string, domain string, remotePort int, proxyAddress string, proxyPort int, tlsConfig *tls.Config) {
 	if hpClient.conn != nil {
 		hpClient.conn.Close()
 	}
@@ -40,7 +50,8 @@ func (hpClient *HpClient) Connect(messageType hpMessage.HpMessage_MessageType, s
 	hpClient.serverAddress = serverAddress
 	hpClient.serverPort = serverPort
 	hpClient.handler = handler
-	hpClient.conn = connection.Connect(serverAddress, serverPort, true, handler, hpClient.CallMsg)
+	hpClient.tlsConfig = tlsConfig
+	hpClient.conn = connection.ConnectWithTLS(serverAddress, serverPort, true, handler, hpClient.CallMsg, tlsConfig)
 }
 
 func (hpClient *HpClient) GetStatus() bool {

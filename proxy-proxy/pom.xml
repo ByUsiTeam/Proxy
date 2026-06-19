@@ -5,21 +5,21 @@
     <parent>
         <artifactId>proxy</artifactId>
         <groupId>miao.byusi.hp</groupId>
-        <version>15.0</version>
+        <version>16.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>proxy-proxy</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
     </properties>
     <dependencies>
         <dependency>
             <groupId>miao.byusi.hp</groupId>
             <artifactId>proxy-common</artifactId>
-            <version>15.0</version>
+            <version>16.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

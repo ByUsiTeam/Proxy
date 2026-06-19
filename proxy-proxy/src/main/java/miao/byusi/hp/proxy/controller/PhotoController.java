@@ -102,7 +102,7 @@ public class PhotoController {
         try {
             FileUtils.delete(new File(PHOTO_PATH + File.separator + path));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("删除图片失败", e);
         }
         response.redirect("/photo/" + path.split("/")[0]);
     }

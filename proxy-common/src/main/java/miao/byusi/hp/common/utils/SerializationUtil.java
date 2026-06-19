@@ -1,5 +1,8 @@
 package miao.byusi.hp.common.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
@@ -9,6 +12,7 @@ import java.io.ObjectOutputStream;
  * @author hxm
  */
 public class SerializationUtil {
+    private static final Logger log = LoggerFactory.getLogger(SerializationUtil.class);
 
     public static byte[] serialize(Object o){
         byte[] byteArray = null ;
@@ -28,7 +32,7 @@ public class SerializationUtil {
             ObjectInputStream ois = new ObjectInputStream(bai)){
             o = ois.readObject();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("反序列化失败", e);
         }
         return o;
     }

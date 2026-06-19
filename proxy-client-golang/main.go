@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"proxy-client-golang/pkg/logger"
+	"proxy-client-golang/tcp"
 	"proxy-client-golang/web"
 	"time"
 
@@ -60,10 +61,26 @@ func main() {
 	var (
 		deviceId string
 		logLevel int
+		// SSL配置参数
+		sslEnabled      bool
+		sslCertFile     string
+		sslKeyFile      string
+		sslCAFile       string
+		sslServerName   string
+		sslInsecureSkip bool
 	)
 
 	flag.StringVar(&deviceId, "deviceId", "NO_ID", "设备ID")
 	flag.IntVar(&logLevel, "logLevel", web.LogLevelInfo, "日志级别(0=Debug,1=Info,2=Warn,3=Error)")
+
+	// SSL/TLS配置参数
+	flag.BoolVar(&sslEnabled, "ssl", false, "启用SSL/TLS加密连接")
+	flag.StringVar(&sslCertFile, "sslCert", "", "SSL客户端证书文件路径（PEM格式）")
+	flag.StringVar(&sslKeyFile, "sslKey", "", "SSL客户端私钥文件路径（PEM格式）")
+	flag.StringVar(&sslCAFile, "sslCA", "", "SSL CA证书文件路径（用于验证服务器证书）")
+	flag.StringVar(&sslServerName, "sslServerName", "", "SSL服务器名称（SNI）")
+	flag.BoolVar(&sslInsecureSkip, "sslInsecureSkip", false, "跳过SSL证书验证（仅用于测试）")
+
 	flag.Parse()
 
 	// 环境变量处理
@@ -73,15 +90,41 @@ func main() {
 		}
 	}
 
+	// 初始化SSL配置
+	if sslEnabled || os.Getenv("SSL_ENABLED") == "true" {
+		sslConfig := &tcp.SSLConfig{
+			Enable:       sslEnabled || os.Getenv("SSL_ENABLED") == "true",
+			CertFile:     getEnvOrFlag("SSL_CERT_FILE", sslCertFile),
+			KeyFile:      getEnvOrFlag("SSL_KEY_FILE", sslKeyFile),
+			CAFile:       getEnvOrFlag("SSL_CA_FILE", sslCAFile),
+			ServerName:   getEnvOrFlag("SSL_SERVER_NAME", sslServerName),
+			InsecureSkip: sslInsecureSkip || os.Getenv("SSL_INSECURE_SKIP") == "true",
+		}
+		tcp.SetSSLConfig(sslConfig)
+	}
+
 	// 初始化日志系统
 	log := initLogger(logLevel)
-	
+
 	log.Infof("启动参数 deviceId=%s logLevel=%d", deviceId, logLevel)
-	// log.Debugf("调试信息 timestamp=%d goroutines=%d", time.Now().Unix(), 15)
+
+	// 打印SSL配置状态
+	if sslConfig := tcp.GetSSLConfig(); sslConfig != nil && sslConfig.Enable {
+		log.Infof("SSL配置: 启用=%t, 证书=%s, CA=%s, 服务器名称=%s, 跳过验证=%t",
+			sslConfig.Enable, sslConfig.CertFile, sslConfig.CAFile, sslConfig.ServerName, sslConfig.InsecureSkip)
+	}
 
 	web.InitCloudDevice("https://proxy.properos.cn", deviceId, logLevel, log)
-	
-	log.Infof("服务就绪 url=%s version=%s", "http://127.0.0.1:10240/", "15.6")
-	
-	web.StartWeb(0, "15.6", log)
+
+	log.Infof("服务就绪 url=%s version=%s", "http://127.0.0.1:10240/", "16.0")
+
+	web.StartWeb(0, "16.0", log)
+}
+
+// getEnvOrFlag 获取环境变量值，如果环境变量存在则优先使用
+func getEnvOrFlag(envName, flagValue string) string {
+	if envValue := os.Getenv(envName); envValue != "" {
+		return envValue
+	}
+	return flagValue
 }

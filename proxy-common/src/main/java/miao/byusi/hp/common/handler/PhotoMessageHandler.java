@@ -4,6 +4,8 @@ import cn.hserver.core.queue.HServerQueue;
 import cn.hserver.core.server.context.ConstConfig;
 import com.google.common.io.Files;
 import miao.byusi.hp.common.message.Photo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class PhotoMessageHandler {
+    private static final Logger log = LoggerFactory.getLogger(PhotoMessageHandler.class);
 
     private final static List<Photo> PHOTOS = new ArrayList<>();
 
@@ -51,7 +54,7 @@ public abstract class PhotoMessageHandler {
                 PHOTOS.remove(photo);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("图片处理异常", e);
         }
     }
 }

@@ -163,7 +163,7 @@ public class OpenApiController {
 
     @POST("/statistics/add")
     public JsonResult statisticsAdd(Statistics statistics) {
-        System.out.println(statistics);
+        log.debug("统计数据: {}", statistics);
         statisticsService.add(statistics);
         return JsonResult.ok();
     }

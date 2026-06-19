@@ -5,7 +5,7 @@
     <parent>
         <artifactId>proxy</artifactId>
         <groupId>miao.byusi.hp</groupId>
-        <version>15.0</version>
+        <version>16.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>proxy-common</artifactId>
@@ -20,9 +20,9 @@
     </dependencies>
 
     <properties>
-        <java.version>1.8</java.version>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
+        <java.version>25</java.version>
+        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <skipTests>true</skipTests>
     </properties>

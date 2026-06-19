@@ -11,7 +11,7 @@ public class DateUtil {
         try {
             String res;
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            long lt = new Long(s);
+            long lt = Long.parseLong(s);
             Date date = new Date(lt);
             res = simpleDateFormat.format(date);
             return res;

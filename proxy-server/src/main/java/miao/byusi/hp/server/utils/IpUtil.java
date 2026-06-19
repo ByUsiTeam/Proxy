@@ -25,6 +25,8 @@ public class IpUtil {
         System.out.println(ip);
     }
 
+    // main方法保留System.out用于本地测试
+
 
     public static File data() {
         try {

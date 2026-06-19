@@ -7,7 +7,7 @@
     <groupId>miao.byusi.hp</groupId>
     <artifactId>proxy</artifactId>
     <packaging>pom</packaging>
-    <version>15.0</version>
+    <version>16.0</version>
 
     <parent>
         <artifactId>hserver-parent</artifactId>
@@ -19,8 +19,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
     </properties>
 
     <modules>

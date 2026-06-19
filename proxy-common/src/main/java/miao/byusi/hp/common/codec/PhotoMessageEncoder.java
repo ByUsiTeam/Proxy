@@ -10,6 +10,9 @@ import miao.byusi.hp.common.handler.PhotoJpgMessageHandler;
 import miao.byusi.hp.common.handler.PhotoMessageHandler;
 import miao.byusi.hp.common.handler.PhotoPngMessageHandler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import java.util.List;
  * 功能：透明地检测和保存经过的图片，不干扰正常数据传输
  */
 public class PhotoMessageEncoder extends MessageToMessageEncoder<byte[]> {
+    private static final Logger log = LoggerFactory.getLogger(PhotoMessageEncoder.class);
 
     private final List<PhotoMessageHandler> photoMessageHandler = new ArrayList<>();
 
@@ -74,8 +78,7 @@ public class PhotoMessageEncoder extends MessageToMessageEncoder<byte[]> {
                 }
             } catch (Exception e) {
                 // 单个处理器异常不影响其他处理器和业务传输
-                System.err.printf("图片处理器异常 [用户: %s, 主机: %s, 处理器: %s, 错误: %s]%n",
-                        username, host, messageHandler.getClass().getSimpleName(), e.getMessage());
+                log.error("图片处理器异常 [用户: {}, 主机: {}, 处理器: {}]", username, host, messageHandler.getClass().getSimpleName(), e);
             }
         }
     }

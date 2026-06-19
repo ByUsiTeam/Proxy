@@ -32,7 +32,7 @@ public abstract class HpAbsHandler extends SimpleChannelInboundHandler<byte[]> {
             IdleStateEvent e = (IdleStateEvent) evt;
             //不可写说明在传输数据，不要傻逼的给关了
             if (e.state() == IdleState.READER_IDLE&&ctx.channel().isWritable()) {
-                System.out.println("Read idle loss connection....");
+                log.warn("Read idle loss connection.");
                 ctx.close();
             } else if (e.state() == IdleState.WRITER_IDLE) {
                 HpMessageData.HpMessage.Builder messageBuild = HpMessageData.HpMessage.newBuilder();

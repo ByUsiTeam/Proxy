@@ -45,4 +45,6 @@ public class Md5Util {
         System.out.println(get("root:123456"));
     }
 
+    // main方法保留System.out用于本地测试
+
 }

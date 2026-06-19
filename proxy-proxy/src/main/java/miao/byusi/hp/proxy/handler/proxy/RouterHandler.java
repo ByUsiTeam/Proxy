@@ -19,6 +19,8 @@ import static miao.byusi.hp.proxy.utils.FileUtil.readFile;
 
 
 public class RouterHandler extends SimpleChannelInboundHandler<HttpRequest> {
+    private static final Logger log = LoggerFactory.getLogger(RouterHandler.class);
+
     public static String dataHtml = "与服务器断开了连接了呢";
 
     static {
@@ -27,7 +29,7 @@ public class RouterHandler extends SimpleChannelInboundHandler<HttpRequest> {
             data.put("adminAddress", IocUtil.getBean(WebConfig.class).getAdminAddress());
             dataHtml = FreemarkerUtil.getTemplate("/tmp.ftl", data);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("路由模板初始化失败", e);
         }
     }
 

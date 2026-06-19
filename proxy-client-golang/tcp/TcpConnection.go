@@ -2,9 +2,10 @@ package tcp
 
 import (
 	"bufio"
-	"proxy-client-golang/Protol"
+	"crypto/tls"
 	"io"
 	"net"
+	"proxy-client-golang/Protol"
 	"strconv"
 )
 
@@ -16,7 +17,21 @@ func NewTcpConnection() *TcpConnection {
 }
 
 func (connection *TcpConnection) Connect(host string, port int, redType bool, handler Handler, call func(mgs string)) net.Conn {
-	conn, err := net.Dial("tcp", host+":"+strconv.Itoa(port))
+	return connection.ConnectWithTLS(host, port, redType, handler, call, nil)
+}
+
+func (connection *TcpConnection) ConnectWithTLS(host string, port int, redType bool, handler Handler, call func(mgs string), tlsConfig *tls.Config) net.Conn {
+	var conn net.Conn
+	var err error
+
+	if tlsConfig != nil {
+		// TLS连接
+		conn, err = tls.Dial("tcp", host+":"+strconv.Itoa(port), tlsConfig)
+	} else {
+		// 普通TCP连接
+		conn, err = net.Dial("tcp", host+":"+strconv.Itoa(port))
+	}
+
 	if err != nil {
 		if redType {
 			call("不能能连到穿透服务器：" + host + ":" + strconv.Itoa(port) + " 原因：" + err.Error())
@@ -25,6 +40,17 @@ func (connection *TcpConnection) Connect(host string, port int, redType bool, ha
 		}
 		return nil
 	}
+
+	if tlsConfig != nil {
+		if tlsConn, ok := conn.(*tls.Conn); ok {
+			if err := tlsConn.Handshake(); err != nil {
+				call("TLS握手失败：" + err.Error())
+				tlsConn.Close()
+				return nil
+			}
+		}
+	}
+
 	handler.ChannelActive(conn)
 	//设置读
 	go func() {

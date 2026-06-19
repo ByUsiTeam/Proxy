@@ -25,7 +25,7 @@ public class NsfwServiceImpl implements NsfwService {
             assert is != null;
             this.graphDef = IOUtils.toByteArray(is);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("NSFW模型加载失败", e);
         }
     }
 

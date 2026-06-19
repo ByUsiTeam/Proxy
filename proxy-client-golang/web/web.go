@@ -1,23 +1,25 @@
 package web
 
 import (
+	"crypto/tls"
 	"embed"
 	"encoding/json"
-	_"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/gorilla/websocket"
-	HpMessage "proxy-client-golang/hpMessage"
-	"proxy-client-golang/pkg/logger"
-	"proxy-client-golang/tcp"
+	_ "fmt"
 	"io"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	HpMessage "proxy-client-golang/hpMessage"
+	"proxy-client-golang/pkg/logger"
+	"proxy-client-golang/tcp"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 )
 
 //go:embed *
@@ -130,6 +132,12 @@ func Proxy(messageType HpMessage.HpMessage_MessageType, server_ip string, server
 	log.Infof("创建新的代理连接: 类型=%s, 服务器=%s:%d, 域名=%s, 远程端口=%d, 目标=%s:%d",
 		messageType, server_ip, server_port, domain, remote_port, ip, port)
 
+	// 获取SSL配置
+	var tlsConfig *tls.Config
+	if sslCfg := tcp.GetSSLConfig(); sslCfg != nil && sslCfg.Enable {
+		tlsConfig, _ = sslCfg.NewTLSConfig()
+	}
+
 	hpClient := tcp.NewHpClient(func(message string) {
 		log.Infof("[%s] %s", domain, message)
 		wsSend(Log{Domain: domain, Msg: message})
@@ -144,7 +152,11 @@ func Proxy(messageType HpMessage.HpMessage_MessageType, server_ip string, server
 			}
 			if !hpClient.GetStatus() {
 				log.Warnf("代理连接 %s 断开，尝试重连...", domain)
-				hpClient.Connect(messageType, server_ip, server_port, username, password, domain, remote_port, ip, port)
+				if tlsConfig != nil {
+					hpClient.ConnectWithTLS(messageType, server_ip, server_port, username, password, domain, remote_port, ip, port, tlsConfig)
+				} else {
+					hpClient.Connect(messageType, server_ip, server_port, username, password, domain, remote_port, ip, port)
+				}
 				wsSend(Log{Domain: domain, Msg: "正在重连"})
 			}
 			time.Sleep(5 * time.Second)
